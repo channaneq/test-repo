@@ -23,7 +23,7 @@ jobs:
      #   id: changed-files
       #  uses: tj-actions/changed-files@v21
      
-     - name: Run changed-files with defaults on the dir1
+      - name: Run changed-files with defaults on the dir1
         id: changed-files-for-dir1
         uses: tj-actions/changed-files@v21
         with:
