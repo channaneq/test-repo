@@ -29,6 +29,8 @@ jobs:
           filters: |
             prod:
               - 'gha-dts/*prod/**'
+            staging:
+              - 'gha-dts/*staging/**'
               
       - name: List all changed files
         if: steps.filter.outputs.prod == 'true'
