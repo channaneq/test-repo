@@ -31,6 +31,7 @@ jobs:
               
            # run only if 'backend' files were changed
       - name: Prod DTS trigger
+        uses: dorny/paths-filter@v2
         if: steps.filter.outputs.prod == 'true'
         with: 
           files: ${{ steps.filter.outputs.changed_files }}
