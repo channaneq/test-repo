@@ -31,6 +31,7 @@ jobs:
               - 'gha-dts/*prod/**'
               
       - name: List all changed files
+        if: steps.filter.outputs.prod == 'true'
         run: |
          for file in ${{ steps.filter.outputs.prod_files }}; do
             echo "$file was changed"
