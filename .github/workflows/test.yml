@@ -25,13 +25,15 @@ jobs:
         uses: dorny/paths-filter@v2
         id: filter
         with:
+          list-files: json
           filters: |
             prod:
               - 'gha-dts/*prod/**'
               
       - name: Prod DTS trigger
         if: steps.filter.outputs.prod == 'true'
-        run: echo ${{ steps.filter.outputs.changed_files }}
+        uses: dorny/paths-filter@v2
+        run: echo ${{ steps.filter.outputs.prod_files }}
      
    #   - name: Run changed-files with defaults on the dir1
     #    id: changed-files-for-dir1
