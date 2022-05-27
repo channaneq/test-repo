@@ -7,6 +7,7 @@ on:
       - main
 
 jobs:
+
   basic_test:
     runs-on: ubuntu-latest
     name: Basic Usage Test
