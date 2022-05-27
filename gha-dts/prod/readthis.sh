@@ -1,1 +1,1 @@
-ust a te st 
+ust a test 
