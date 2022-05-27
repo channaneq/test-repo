@@ -1,0 +1,44 @@
+name: Test Suite
+
+on:
+  #pull_request:
+  push:
+    branches:
+      - main
+
+jobs:
+  basic_test:
+    runs-on: ubuntu-latest
+    name: Basic Usage Test
+    permissions:
+      id-token: write
+      contents: read
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v2
+        with:
+          fetch-depth: 0  # OR "2" -> To retrieve the preceding commit.
+          
+     # - name: Get changed files
+     #   id: changed-files
+      #  uses: tj-actions/changed-files@v21
+     
+     - name: Run changed-files with defaults on the dir1
+        id: changed-files-for-dir1
+        uses: tj-actions/changed-files@v21
+        with:
+          path: ghadts-test
+          
+      - name: List all changed files
+        run: |
+          for file in ${{ steps.changed-files-for-dir1.outputs.all_changed_files }}; do
+            echo "$file was changed"
+          done
+      - name: Test deployment tracker
+        uses: everquoteinc/deployment-tracker-action@v1
+        with:
+          application-name: deployment-tracker-action
+          platform: "developer experience"
+          environment: unspec
+          deployment-status: start
+          aws-region: us-east-1
