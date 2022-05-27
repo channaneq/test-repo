@@ -32,7 +32,9 @@ jobs:
            # run only if 'backend' files were changed
       - name: Prod DTS trigger
         if: steps.filter.outputs.prod == 'true'
-        run: echo prod has been changed
+        with: 
+          files: ${{ steps.filter.outputs.changed_files }}
+          run: echo $files
      
    #   - name: Run changed-files with defaults on the dir1
     #    id: changed-files-for-dir1
