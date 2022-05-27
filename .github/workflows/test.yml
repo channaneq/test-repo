@@ -27,7 +27,7 @@ jobs:
         with:
           filters: |
             path1:
-              - 'prod/**'
+              - 'gha-dts/prod/**'
               
            # run only if 'backend' files were changed
       - name: backend tests
