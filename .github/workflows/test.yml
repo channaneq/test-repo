@@ -35,13 +35,13 @@ jobs:
             echo "$file was changed"
           done
 
-      - name: Test deployment tracker
-        uses: everquoteinc/deployment-tracker-action@v1
-        with:
-          application-name: deployment-tracker-action
-          platform: "developer experience"
-          environment: unspec
-          deployment-status: start
-          aws-region: us-east-1
+     # - name: Test deployment tracker
+      #  uses: everquoteinc/deployment-tracker-action@v1
+       # with:
+        #  application-name: deployment-tracker-action
+         # platform: "developer experience"
+         # environment: unspec
+         # deployment-status: start
+        #  aws-region: us-east-1
           
           
