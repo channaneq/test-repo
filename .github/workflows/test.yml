@@ -26,12 +26,12 @@ jobs:
         id: filter
         with:
           filters: |
-            path1:
+            prod:
               - 'gha-dts/*prod/**'
               
            # run only if 'backend' files were changed
-      - name: backend tests
-        if: steps.filter.outputs.path1 == 'true'
+      - name: Prod DTS trigger
+        if: steps.filter.outputs.prod == 'true'
         run: echo prod has been changed
      
    #   - name: Run changed-files with defaults on the dir1
