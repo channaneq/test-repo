@@ -30,11 +30,11 @@ jobs:
             prod:
               - 'gha-dts/*prod/**'
               
-      - name: List all changed files
-        run: |
-         for file in ${{ steps.filter.outputs.prod_files }}; do
-            echo "$file was changed"
-         done
+    #  - name: List all changed files
+    #    run: |
+    #     for file in ${{ steps.filter.outputs.prod_files }}; do
+     #       echo "$file was changed"
+     #    done
               
   #    - name: Prod DTS trigger
      #   if: steps.filter.outputs.prod == 'true'
