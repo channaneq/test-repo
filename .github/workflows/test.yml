@@ -31,7 +31,7 @@ jobs:
               
            # run only if 'backend' files were changed
       - name: backend tests
-        if: steps.filter.outputs.backend == 'true'
+        if: steps.filter.outputs.path1 == 'true'
         run: echo prod has been changed
      
    #   - name: Run changed-files with defaults on the dir1
