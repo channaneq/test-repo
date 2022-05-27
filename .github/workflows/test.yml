@@ -30,17 +30,18 @@ jobs:
             prod:
               - 'gha-dts/*prod/**'
               
+      - name: List all changed files
+        run: |
+         for file in ${{ steps.filter.outputs.prod_files }}; do
+            echo "$file was changed"
+         done
+              
   #    - name: Prod DTS trigger
      #   if: steps.filter.outputs.prod == 'true'
       #  uses: dorny/paths-filter@v2
       #  run: echo ${{ steps.filter.outputs.prod_files }}
                  
-      - name: List all changed files
-        if: ${{ steps.filter.outputs.prod == 'true' }}
-        run: |
-         for file in ${{ steps.filter.outputs.prod_files }}; do
-            echo "$file was changed"
-         done
+      
 
      # - name: Test deployment tracker
       #  uses: everquoteinc/deployment-tracker-action@v1
