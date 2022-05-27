@@ -28,7 +28,7 @@ jobs:
         uses: tj-actions/changed-files@v21
         with:
           path: gha-dts
-          
+                 
       - name: List all changed files
         run: |
           for file in ${{ steps.changed-files-for-dir1.outputs.added_files }}; do
