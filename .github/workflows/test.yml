@@ -31,9 +31,7 @@ jobs:
               
       - name: Prod DTS trigger
         if: steps.filter.outputs.prod == 'true'
-        with: 
-          files: ${{ steps.filter.outputs.changed_files }}
-          run: echo $files
+        run: echo ${{ steps.filter.outputs.changed_files }}
      
    #   - name: Run changed-files with defaults on the dir1
     #    id: changed-files-for-dir1
