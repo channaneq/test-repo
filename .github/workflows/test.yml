@@ -34,12 +34,13 @@ jobs:
       - name: List all changed prod files
         if: steps.filter.outputs.prod == 'true'
         run: |
+         prod_applications=()
          for file in ${{ steps.filter.outputs.prod_files }}; do
             echo "$file was changed"
             base="$(dirname $file)"
-            application="$(basename $base)"
+            prod_applications+=("$(basename $base)")
          done
-         echo $application
+         echo ${prod_applications[@]}
          
       - name: List all changed staging files
         if: steps.filter.outputs.staging == 'true'
