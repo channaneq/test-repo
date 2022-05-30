@@ -31,13 +31,21 @@ jobs:
             staging:
               - 'deploy/*staging/**'
               
+      - name: jq-filter-prod-step
+        uses: sergeysova/jq-action@v2
+        id: prod-jq-filter
+        with:
+          cmd: 'jq --raw-output ${{ steps.filter.outputs.prod_files }}'
+          multiline: true
+        
+      - name: Show files
+        run: 'echo "${{ steps.prod-jq-filter.outputs.value }}"'
+
+              
       - name: List all changed prod files
         if: steps.filter.outputs.prod == 'true'
         run: |
-         echo -e "deb http://us.archive.ubuntu.com/ubuntu vivid main universe\n" >> /etc/apt/sources.list
-         apt-get update
-         apt-get install jq
-         echo ${{ steps.filter.outputs.prod_files }} | jq --raw-output '.[]'
+         echo ${{ steps.filter.outputs.prod_files }} > rawfiles.yml
          prod_applications=()
          for file in ${{ steps.filter.outputs.prod_files }}; do
             echo "$file was changed"
