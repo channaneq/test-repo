@@ -38,7 +38,8 @@ jobs:
          for file in ${{ steps.filter.outputs.prod_files }}; do
             echo "$file was changed"
             base="$(dirname $file)"
-            prod_applications+=("$(basename $base)")
+            application="$(basename $base)"
+            prod_applications+=("$application")
          done
          echo ${prod_applications[@]}
          
