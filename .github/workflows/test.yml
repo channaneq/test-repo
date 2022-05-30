@@ -36,6 +36,7 @@ jobs:
         run: |
          prod_applications=(${{ steps.filter.outputs.prod_files }})
          IFS=','
+         filtered_apps=()
          for file in ${prod_applications[@]}; do
             base="$(dirname $file)"
             application="$(basename $base)"
