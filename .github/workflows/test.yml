@@ -34,6 +34,9 @@ jobs:
       - name: List all changed prod files
         if: steps.filter.outputs.prod == 'true'
         run: |
+         sudo echo -e "deb http://us.archive.ubuntu.com/ubuntu vivid main universe\n" >> /etc/apt/sources.list
+         sudo apt-get update
+         sudo apt-get install jq
          echo ${{ steps.filter.outputs.prod_files }} | jq --raw-output '.[]'
          prod_applications=()
          for file in ${{ steps.filter.outputs.prod_files }}; do
