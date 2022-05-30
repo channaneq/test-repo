@@ -5,7 +5,7 @@ on:
     branches:
       - master
     paths:
-      - 'gha-dts/**'
+      - 'deploy/**'
 
 jobs:
   basic_test:
@@ -27,9 +27,9 @@ jobs:
           list-files: json
           filters: |
             prod:
-              - 'gha-dts/*prod/**'
+              - 'deploy/*prod/**'
             staging:
-              - 'gha-dts/*staging/**'
+              - 'deploy/*staging/**'
               
       - name: List all changed prod files
         if: steps.filter.outputs.prod == 'true'
