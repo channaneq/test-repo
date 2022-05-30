@@ -35,13 +35,12 @@ jobs:
         if: steps.filter.outputs.prod == 'true'
         run: |
          prod_applications=(${{ steps.filter.outputs.prod_files }})
-         echo ${prod_applications[@]}
          for file in ${prod_applications[@]}; do
             base="$(dirname $file)"
             application="$(basename $base)"
-            prod_applications+=("$application")
+            filtered_apps+=("$application")
          done
-         #echo ${prod_applications[@]}
+         echo ${filtered_apps[@]}
          
       - name: List all changed staging files
         if: steps.filter.outputs.staging == 'true'
