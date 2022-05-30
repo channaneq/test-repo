@@ -46,6 +46,7 @@ jobs:
       - name: List all changed staging files
         if: steps.filter.outputs.staging == 'true'
         run: |
+         echo ${{ steps.filter.outputs.staging_files }}
          for file in ${{ steps.filter.outputs.staging_files }}; do
             echo "$file was changed"
             base="$(dirname $file)"
