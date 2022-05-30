@@ -41,6 +41,7 @@ jobs:
             base="$(dirname $file)"
             application="$(basename $base)"
             filtered_apps+=("$application")
+            echo $filtered_apps
          done
          echo $filtered_apps
          
