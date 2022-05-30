@@ -41,9 +41,12 @@ jobs:
             base="$(dirname $file)"
             application="$(basename $base)"
             filtered_apps+=("$application")
-            echo $filtered_apps
+            
          done
-         echo $filtered_apps
+         for value in "${prod_applications_1[@]}"; do
+            echo $value
+         
+         done
          
       - name: List all changed staging files
         if: steps.filter.outputs.staging == 'true'
