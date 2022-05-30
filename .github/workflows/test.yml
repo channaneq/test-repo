@@ -35,6 +35,7 @@ jobs:
         if: steps.filter.outputs.prod == 'true'
         run: |
          prod_applications=(${{ steps.filter.outputs.prod_files }})
+         echo  $prod_applications
          for file in ${prod_applications[@]}; do
             base="$(dirname $file)"
             application="$(basename $base)"
