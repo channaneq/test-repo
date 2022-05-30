@@ -34,6 +34,7 @@ jobs:
       - name: List all changed prod files
         if: steps.filter.outputs.prod == 'true'
         run: |
+         echo ${{ steps.filter.outputs.prod_files }}
          prod_applications=()
          for file in ${{ steps.filter.outputs.prod_files }}; do
             echo "$file was changed"
