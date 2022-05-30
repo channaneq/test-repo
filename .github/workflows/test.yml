@@ -41,7 +41,7 @@ jobs:
             application="$(basename $base)"
             filtered_apps+=("$application")
          done
-         echo ${filtered_apps[@]}
+         echo $filtered_apps
          
       - name: List all changed staging files
         if: steps.filter.outputs.staging == 'true'
