@@ -36,7 +36,7 @@ jobs:
         run: |
          prod_applications=(${{ steps.filter.outputs.prod_files }})
          echo ${prod_applications[@]}
-         for file in ${{ steps.filter.outputs.prod_files }}; do
+         for file in ${prod_applications[@]}; do
             base="$(dirname $file)"
             application="$(basename $base)"
             prod_applications+=("$application")
