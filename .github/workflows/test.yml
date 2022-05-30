@@ -43,7 +43,7 @@ jobs:
             filtered_apps+=("$application")
             
          done
-         for value in "${prod_applications_1[@]}"; do
+         for value in "${filtered_apps[@]}"; do
             echo $value
          
          done
