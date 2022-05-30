@@ -34,7 +34,7 @@ jobs:
       - name: List all changed prod files
         if: steps.filter.outputs.prod == 'true'
         run: |
-         prod_applications=(${{ steps.filter.outputs.prod_files }}
+         prod_applications=(${{ steps.filter.outputs.prod_files }})
          IFS=','
          for file in ${prod_applications[@]}; do
             base="$(dirname $file)"
