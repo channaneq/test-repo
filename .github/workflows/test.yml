@@ -34,8 +34,6 @@ jobs:
       - name: List all changed prod files
         if: steps.filter.outputs.prod == 'true'
         run: |
-         echo ${{ steps.filter.outputs.prod_files }} > rawfiles.yml
-         cat rawfiles.yml
          prod_applications=()
          for file in ${{ steps.filter.outputs.prod_files }}; do
             base="$(dirname $file)"
