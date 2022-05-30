@@ -30,22 +30,12 @@ jobs:
               - 'deploy/*prod/**'
             staging:
               - 'deploy/*staging/**'
-              
-      - name: jq-filter-prod-step
-        uses: sergeysova/jq-action@v2
-        id: prod-jq-filter
-        with:
-          cmd: 'jq --raw-output ${{ steps.filter.outputs.prod_files }}'
-          multiline: true
-        
-      - name: Show files
-        run: 'echo "${{ steps.prod-jq-filter.outputs.value }}"'
-
-              
+                      
       - name: List all changed prod files
         if: steps.filter.outputs.prod == 'true'
         run: |
          echo ${{ steps.filter.outputs.prod_files }} > rawfiles.yml
+         echo rawfiles.yml
          prod_applications=()
          for file in ${{ steps.filter.outputs.prod_files }}; do
             echo "$file was changed"
