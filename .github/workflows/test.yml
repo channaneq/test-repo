@@ -42,10 +42,16 @@ jobs:
             prod_application="$(basename $prod_base)"
             filtered_prod_apps+=("$prod_application")  
          done
-         
+         export FOO=${prod_application[@]}
+         echo "::set-env applications=FOO::$FOO"
          for prod_value in "${filtered_prod_apps[@]}"; do
             echo $prod_value
          done
+         
+      - name: test-env-variable
+        if: steps.filter.outputs.prod == 'true'
+        run: | 
+         echo $FOO
          
       - name: List all changed staging files
         if: steps.filter.outputs.staging == 'true'
