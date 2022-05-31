@@ -42,7 +42,7 @@ jobs:
             prod_application="$(basename $prod_base)"
             filtered_prod_apps+=("$prod_application")  
          done
-         echo "applications=${prod_application[@]}" >> $GITHUB_ENV
+         echo "applications=${filtered_prod_apps[@]}" >> $GITHUB_ENV
          for prod_value in "${filtered_prod_apps[@]}"; do
             echo $prod_value
          done
