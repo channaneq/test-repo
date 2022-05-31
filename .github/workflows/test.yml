@@ -36,28 +36,32 @@ jobs:
         run: |
          prod_applications=(${{ steps.filter.outputs.prod_files }})
          IFS=','
-         filtered_apps=()
-         for file in ${prod_applications[@]}; do
-            base="$(dirname $file)"
-            application="$(basename $base)"
-            filtered_apps+=("$application")
-            
+         filtered_prod_apps=()
+         for prod_file in ${prod_applications[@]}; do
+            prod_base="$(dirname $prod_file)"
+            prod_application="$(basename $prod_base)"
+            filtered_prod_apps+=("$prod_application")  
          done
-         for value in "${filtered_apps[@]}"; do
-            echo $value
          
+         for prod_value in "${filtered_prod_apps[@]}"; do
+            echo $prod_value
          done
          
       - name: List all changed staging files
         if: steps.filter.outputs.staging == 'true'
         run: |
-         echo ${{ steps.filter.outputs.staging_files }}
-         for file in ${{ steps.filter.outputs.staging_files }}; do
-            echo "$file was changed"
-            base="$(dirname $file)"
-            application="$(basename $base)"
+         staging_applications=(${{ steps.filter.outputs.staging_files }})
+         IFS=','
+         filtered_staging_apps=()
+         for staging_file in ${{staging_applications}}; do
+            staging_base="$(dirname $staging_file)"
+            staging_application="$(basename $staging_base)"
+            filtered_staging_apps+=("$staging_application") 
          done
-         echo $application
+         
+         for staging_value in "${filtered_staging_apps[@]}"; do
+            echo $staging_value
+         done
               
   #    - name: Prod DTS trigger
      #   if: steps.filter.outputs.prod == 'true'
