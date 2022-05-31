@@ -26,10 +26,26 @@ jobs:
         with:
           list-files: json
           filters: |
-            prod:
-              - 'deploy/*prod/**'
             staging:
               - 'deploy/*staging/**'
+            prod:
+              - 'deploy/*prod/**'
+              
+      - name: List all changed staging files
+        if: steps.filter.outputs.staging == 'true'
+        run: |
+         staging_applications=(${{ steps.filter.outputs.staging_files }})
+         IFS=','
+         filtered_staging_apps=()
+         for staging_file in ${staging_applications[@]}; do
+            staging_base="$(dirname $staging_file)"
+            staging_application="$(basename $staging_base)"
+            filtered_staging_apps+=("$staging_application") 
+         done
+         echo "applications_staging=${filtered_staging_apps[@]}" >> $GITHUB_ENV
+        # for staging_value in "${filtered_staging_apps[@]}"; do
+         #   echo $staging_value
+         #done
                       
       - name: List all changed prod files
         if: steps.filter.outputs.prod == 'true'
@@ -42,31 +58,20 @@ jobs:
             prod_application="$(basename $prod_base)"
             filtered_prod_apps+=("$prod_application")  
          done
-         echo "applications=${filtered_prod_apps[@]}" >> $GITHUB_ENV
-         for prod_value in "${filtered_prod_apps[@]}"; do
-            echo $prod_value
-         done
+         echo "applications_prod=${filtered_prod_apps[@]}" >> $GITHUB_ENV
+        # for prod_value in "${filtered_prod_apps[@]}"; do
+         #   echo $prod_value
+        # done
          
-      - name: test-env-variable
+      - name: test-env-variable-staging
+        if: steps.filter.outputs.staging == 'true'
+        run: | 
+         echo "${{ env.applications_staging }}"
+         
+      - name: test-env-variable-prod
         if: steps.filter.outputs.prod == 'true'
         run: | 
-         echo "${{ env.applications }}"
-         
-      - name: List all changed staging files
-        if: steps.filter.outputs.staging == 'true'
-        run: |
-         staging_applications=(${{ steps.filter.outputs.staging_files }})
-         IFS=','
-         filtered_staging_apps=()
-         for staging_file in ${staging_applications[@]}; do
-            staging_base="$(dirname $staging_file)"
-            staging_application="$(basename $staging_base)"
-            filtered_staging_apps+=("$staging_application") 
-         done
-         
-         for staging_value in "${filtered_staging_apps[@]}"; do
-            echo $staging_value
-         done
+         echo "${{ env.applications_prod }}"
               
   #    - name: Prod DTS trigger
      #   if: steps.filter.outputs.prod == 'true'
