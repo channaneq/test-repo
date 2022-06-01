@@ -60,12 +60,12 @@ jobs:
          #   echo $prod_value
         # done
          
-      - name: test-env-variable-staging
+      - name: deploy-staging
         if: steps.filter.outputs.staging == 'true'
         run: | 
          echo "${{ env.applications_staging }}"
          
-      - name: test-env-variable-prod
+      - name: deploy-prod
         if: steps.filter.outputs.prod == 'true'
         run: | 
          echo "${{ env.applications_prod }}"
