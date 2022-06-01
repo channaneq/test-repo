@@ -78,7 +78,7 @@ jobs:
     runs-on: ubuntu-latest
     strategy:
       matrix: 
-       value: ${{fromJson(needs.job1.outputs.matrix)}}
+       value: ${{fromJson(needs.basic_test.outputs.matrix)}}
     steps:
     - run: echo ${{ matrix.value }}
   #    - name: Prod DTS trigger
