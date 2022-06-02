@@ -15,7 +15,7 @@ jobs:
       id-token: write
       contents: read
     outputs:
-      matrix-prod: ${{ steps.set-matrix-prod.outputs.matrix-prod }}
+      matrix-prod: ${{ steps.set-matrix.outputs.matrix-prod }}
     steps:
       - name: Checkout
         uses: actions/checkout@v2
