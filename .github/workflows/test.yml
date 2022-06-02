@@ -83,7 +83,19 @@ jobs:
       matrix: 
        value: ${{ fromJson(needs.set_up.outputs.matrix-prod) }}
     steps:
-    - run: echo ${{ matrix.value }}
+    - name: Check out repository
+      uses: actions/checkout@v2
+    - name: Report deployment - start
+      uses: everquoteinc/deployment-tracker-action@v1
+      with:
+        application-name: ${{ matrix.value }}
+        environment: prod
+        platform: cloud-engineering
+        deployment-status: start
+        aws-region: us-east-1
+        role-to-assume: arn:aws:iam::818416785210:role/devtools-pipeline-common-access
+  #  steps:
+  #  - run: echo ${{ matrix.value }}
     
   staging_dts: 
     needs: set_up
