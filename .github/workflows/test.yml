@@ -8,7 +8,7 @@ on:
       - 'deploy/**'
 
 jobs:
-  set-up:
+  set_up:
     runs-on: ubuntu-latest
     name: Basic Usage Test
     permissions:
@@ -83,7 +83,7 @@ jobs:
     runs-on: ubuntu-latest
     strategy:
       matrix: 
-       value: ${{ fromJson(needs.basic_test.outputs.matrix-prod) }}
+       value: ${{ fromJson(needs.set_up.outputs.matrix-prod) }}
     steps:
     - run: echo ${{ matrix.value }}
     
@@ -92,7 +92,7 @@ jobs:
     runs-on: ubuntu-latest
     strategy:
       matrix: 
-       value: ${{ fromJson(needs.basic_test.outputs.matrix-staging) }}
+       value: ${{ fromJson(needs.set_up.outputs.matrix-staging) }}
     steps:
     - run: echo ${{ matrix.value }}
 
