@@ -59,9 +59,6 @@ jobs:
             filtered_prod_apps+=("$prod_application")  
          done
          echo "applications_prod=${filtered_prod_apps[@]}" >> $GITHUB_ENV
-        # for prod_value in "${filtered_prod_apps[@]}"; do
-         #   echo $prod_value
-        # done
          
       - name: deploy-staging
         id: set-matrix-staging
@@ -80,6 +77,7 @@ jobs:
          
   prod_dts: 
     needs: set_up
+    if: ${{ needs.set_up.outputs.matrix-prod != "" }}
     runs-on: ubuntu-latest
     strategy:
       matrix: 
