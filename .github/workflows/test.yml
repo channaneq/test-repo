@@ -77,7 +77,7 @@ jobs:
          
   prod_dts: 
     needs: set_up
-    if: set_up.outputs.matrix-prod != ""
+    if: needs.set_up.outputs.matrix-prod != ""
     runs-on: ubuntu-latest
     strategy:
       matrix: 
