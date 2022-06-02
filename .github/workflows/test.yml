@@ -8,14 +8,15 @@ on:
       - 'deploy/**'
 
 jobs:
-  basic_test:
+  set-up:
     runs-on: ubuntu-latest
     name: Basic Usage Test
     permissions:
       id-token: write
       contents: read
     outputs:
-      matrix-prod: ${{ steps.set-matrix.outputs.matrix-prod }}
+      matrix-prod: ${{ steps.set-matrix-prod.outputs.matrix-prod }}
+      matrix-staging: ${{ steps.set-matrix-staging.outputs.matrix-staging }}
     steps:
       - name: Checkout
         uses: actions/checkout@v2
@@ -63,28 +64,39 @@ jobs:
         # done
          
       - name: deploy-staging
+        id: set-matrix-staging
         if: steps.filter.outputs.staging == 'true'
         run: | 
          echo "${{ env.applications_staging }}"
+         echo "::set-output name=matrix-staging::$(echo ${{ env.applications_staging }} | tr -d '\n' | jq -R -s -c 'split(" ")')"
+
          
       - name: deploy-prod
-        id: set-matrix
+        id: set-matrix-prod
         if: steps.filter.outputs.prod == 'true'
         run: | 
          echo "${{ env.applications_prod }}"
          echo "::set-output name=matrix-prod::$(echo ${{ env.applications_prod }} | tr -d '\n' | jq -R -s -c 'split(" ")')"
-  job2: 
-    needs: basic_test
+         
+  prod-dts: 
+    needs: set-up
     runs-on: ubuntu-latest
     strategy:
       matrix: 
        value: ${{ fromJson(needs.basic_test.outputs.matrix-prod) }}
     steps:
     - run: echo ${{ matrix.value }}
-  #    - name: Prod DTS trigger
-     #   if: steps.filter.outputs.prod == 'true'
-      #  uses: dorny/paths-filter@v2
-      #  run: echo ${{ steps.filter.outputs.prod_files }}
+    
+  staging-dts: 
+    needs: set-up
+    runs-on: ubuntu-latest
+    strategy:
+      matrix: 
+       value: ${{ fromJson(needs.basic_test.outputs.matrix-staging) }}
+    steps:
+    - run: echo ${{ matrix.value }}
+
+
                  
       
 
