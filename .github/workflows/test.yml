@@ -72,7 +72,7 @@ jobs:
         if: steps.filter.outputs.prod == 'true'
         run: | 
          echo "${{ env.applications_prod }}"
-         echo "::set-output name=matrix::$(echo ${{ env.applications_prod }} | jq -R -s -c 'split("\n")[:-1]')"
+         echo "::set-output name=matrix::$(echo ${{ env.applications_prod }})"
   job2: 
     needs: basic_test
     runs-on: ubuntu-latest
