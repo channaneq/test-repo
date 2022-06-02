@@ -44,7 +44,7 @@ jobs:
             staging_application="$(basename $staging_base)"
             filtered_staging_apps+=("$staging_application") 
          done
-         echo "applications_staging=${filtered_staging_apps[@]}" >> $GITHUB_ENV
+         echo "applications_staging=${filtered_staging_apps}" >> $GITHUB_ENV
                       
       - name: List all changed prod files
         if: steps.filter.outputs.prod == 'true'
