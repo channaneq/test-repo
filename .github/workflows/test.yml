@@ -78,8 +78,8 @@ jobs:
          echo "${{ env.applications_prod }}"
          echo "::set-output name=matrix-prod::$(echo ${{ env.applications_prod }} | tr -d '\n' | jq -R -s -c 'split(" ")')"
          
-  prod-dts: 
-    needs: set-up
+  prod_dts: 
+    needs: set_up
     runs-on: ubuntu-latest
     strategy:
       matrix: 
@@ -87,8 +87,8 @@ jobs:
     steps:
     - run: echo ${{ matrix.value }}
     
-  staging-dts: 
-    needs: set-up
+  staging_dts: 
+    needs: set_up
     runs-on: ubuntu-latest
     strategy:
       matrix: 
