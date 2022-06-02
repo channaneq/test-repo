@@ -72,13 +72,13 @@ jobs:
         if: steps.filter.outputs.prod == 'true'
         run: | 
          echo "${{ env.applications_prod }}"
-         echo "::set-output name=matrix::$(echo ${{ env.applications_prod }} | jq -R -s -c 'split("\n")[:-1]')"
+         echo "::set-output name=matrix::$(echo ${{ env.applications_prod }} | tr -d '\n' | jq -R -s -c 'split(" ")')"
   job2: 
     needs: basic_test
     runs-on: ubuntu-latest
     strategy:
       matrix: 
-       value: ${{ needs.basic_test.outputs.matrix }}
+       value: ${{ fromJson(needs.basic_test.outputs.matrix) }}
     steps:
     - run: echo ${{ matrix.value }}
   #    - name: Prod DTS trigger
