@@ -1,3 +1,96 @@
+#name: Test Suite
+#
+#on:
+#  push:
+#    branches:
+#      - master
+#    paths:
+#      - 'deploy/**'
+#jobs:
+#  set_up:
+#    runs-on: ubuntu-latest
+#    name: Basic Usage Test
+#    permissions:
+#      id-token: write
+#      contents: read
+#    outputs:
+#      matrix-prod: ${{ steps.set-matrix.outputs.matrix-prod }}
+#      matrix-prod-zones: ${{ steps.set-matrix.outputs.matrix-prod-zones}}
+#      matrix-staging: ${{ steps.set-matrix.outputs.matrix-staging }}
+#      matrix-staging-zones: ${{ steps.set-matrix.outputs.matrix-staging-zones}}
+#    steps:
+#      - name: Checkout
+#        uses: actions/checkout@v2
+#        with:
+#          fetch-depth: 0  
+#          
+#      - name: filter
+#        uses: dorny/paths-filter@v2
+#        id: filter
+#        with:
+#          list-files: json
+#          filters: |
+#            staging:
+#              - 'deploy/*staging/**'
+#            prod:
+#              - 'deploy/*prod/**'
+#              
+#      - name: List all changed files
+#        if: steps.filter.outputs.staging == 'true' || steps.filter.outputs.prod == 'true'
+#        run: |
+#         # Dealing with the changed staging files
+#         staging_applications=(${{ steps.filter.outputs.staging_files }})
+#         IFS=','
+#         filtered_staging_apps=()
+#         for staging_file in ${staging_applications[@]}; do
+#            staging_base="$(dirname $staging_file)"
+#            staging_application="$(basename $staging_base)"
+#            filtered_staging_apps+=("$staging_application") 
+#         done
+#         echo "applications_staging=${filtered_staging_apps[@]}" >> $GITHUB_ENV
+#         
+#         # Dealing with the changed prod files (if any)
+#         prod_applications=(${{ steps.filter.outputs.prod_files }})
+#         IFS=','
+#         filtered_prod_apps=()
+#         for prod_file in ${prod_applications[@]}; do
+#            prod_base="$(dirname $prod_file)"
+#            prod_application="$(basename $prod_base)"
+#            filtered_prod_apps+=("$prod_application")  
+#         done
+#         echo "applications_prod=${filtered_prod_apps[@]}" >> $GITHUB_ENV
+#         
+#      - name: set-matrix 
+#        id: set-matrix
+#        if: steps.filter.outputs.staging_files == 'true' || steps.filter.outputs.prod_files == 'true'
+#        run: | 
+#         echo "${{ env.applications_staging }}"
+#         echo "::set-output name=matrix-staging::$(echo ${{ env.applications_staging }} | tr -d '\n' | jq -R -s -c 'split(" ")')"
+#        #echo "${{ env.applications_prod }}"
+#         #echo "::set-output name=matrix-prod::$(echo ${{ env.applications_prod }} | tr -d '\n' | jq -R -s -c 'split(" ")')"
+#         
+#  prod_dts: # this step will only run if there are changed prod files
+#    needs: set_up
+#    if: ${{ needs.set_up.steps.filter.outputs.prod_files == 'true' }}
+#    runs-on: ubuntu-latest
+#    strategy:
+#      max-parallel: 1
+#      matrix: 
+#       value: ${{ fromJson(needs.set_up.outputs.matrix-prod) }}
+#    steps:
+#    - run: echo ${{ matrix.value }}
+#          
+#  staging_dts:  # this step will only run if there are changed staging files
+#    needs: set_up
+#    if: ${{ needs.set_up.steps.filter.outputs.staging_files == 'true' }}
+#    runs-on: ubuntu-latest
+#    strategy:
+#      max-parallel: 1
+#      matrix: 
+#       value: ${{ fromJson(needs.set_up.outputs.matrix-staging) }}
+#    steps:
+#    - run: echo ${{ matrix.value }}
+
 name: Test Suite
 
 on:
@@ -6,6 +99,7 @@ on:
       - master
     paths:
       - 'deploy/**'
+
 jobs:
   set_up:
     runs-on: ubuntu-latest
@@ -15,9 +109,7 @@ jobs:
       contents: read
     outputs:
       matrix-prod: ${{ steps.set-matrix.outputs.matrix-prod }}
-      matrix-prod-zones: ${{ steps.set-matrix.outputs.matrix-prod-zones}}
       matrix-staging: ${{ steps.set-matrix.outputs.matrix-staging }}
-      matrix-staging-zones: ${{ steps.set-matrix.outputs.matrix-staging-zones}}
     steps:
       - name: Checkout
         uses: actions/checkout@v2
@@ -38,7 +130,7 @@ jobs:
       - name: List all changed files
         if: steps.filter.outputs.staging == 'true' || steps.filter.outputs.prod == 'true'
         run: |
-         # Dealing with the changed staging files
+         echo "${{ steps.filter.outputs.staging_files }}"
          staging_applications=(${{ steps.filter.outputs.staging_files }})
          IFS=','
          filtered_staging_apps=()
@@ -49,7 +141,7 @@ jobs:
          done
          echo "applications_staging=${filtered_staging_apps[@]}" >> $GITHUB_ENV
          
-         # Dealing with the changed prod files (if any)
+         echo "${{ steps.filter.outputs.prod_files }}"
          prod_applications=(${{ steps.filter.outputs.prod_files }})
          IFS=','
          filtered_prod_apps=()
@@ -62,27 +154,40 @@ jobs:
          
       - name: set-matrix 
         id: set-matrix
-        if: steps.filter.outputs.staging_files == 'true' || steps.filter.outputs.prod_files == 'true'
+        if: steps.filter.outputs.staging == 'true' || steps.filter.outputs.prod == 'true'
         run: | 
          echo "${{ env.applications_staging }}"
          echo "::set-output name=matrix-staging::$(echo ${{ env.applications_staging }} | tr -d '\n' | jq -R -s -c 'split(" ")')"
-        #echo "${{ env.applications_prod }}"
-         #echo "::set-output name=matrix-prod::$(echo ${{ env.applications_prod }} | tr -d '\n' | jq -R -s -c 'split(" ")')"
+         echo "${{ env.applications_prod }}"
+         echo "::set-output name=matrix-prod::$(echo ${{ env.applications_prod }} | tr -d '\n' | jq -R -s -c 'split(" ")')"
          
-  prod_dts: # this step will only run if there are changed prod files
+         #${{ needs.set_up.steps.filter.outputs.prod == 'true' }}
+  prod_dts: 
     needs: set_up
-    if: ${{ needs.set_up.steps.filter.outputs.prod_files == 'true' }}
+    if: ${{ needs.set_up.steps.filter.outputs.prod_files == '[]' }}
     runs-on: ubuntu-latest
     strategy:
       max-parallel: 1
       matrix: 
        value: ${{ fromJson(needs.set_up.outputs.matrix-prod) }}
     steps:
-    - run: echo ${{ matrix.value }}
-          
-  staging_dts:  # this step will only run if there are changed staging files
+    - name: Check out repository
+      uses: actions/checkout@v2
+    - name: Report deployment - start
+      uses: everquoteinc/deployment-tracker-action@v1
+      with:
+        application-name: ${{ matrix.value }}
+        environment: prod
+        platform: cloud-engineering
+        deployment-status: start
+        aws-region: us-east-1
+        role-to-assume: arn:aws:iam::818416785210:role/devtools-pipeline-common-access
+  #  steps:
+  #  - run: echo ${{ matrix.value }}
+    
+  staging_dts: 
     needs: set_up
-    if: ${{ needs.set_up.steps.filter.outputs.staging_files == 'true' }}
+    if: ${{ needs.set_up.steps.filter.outputs.staging_files != '[]' }}
     runs-on: ubuntu-latest
     strategy:
       max-parallel: 1
@@ -90,3 +195,4 @@ jobs:
        value: ${{ fromJson(needs.set_up.outputs.matrix-staging) }}
     steps:
     - run: echo ${{ matrix.value }}
+
