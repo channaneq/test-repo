@@ -46,10 +46,7 @@ jobs:
             filtered_staging_apps+=("$staging_application") 
          done
          echo "applications_staging=${filtered_staging_apps[@]}" >> $GITHUB_ENV
-                      
-      - name: List all changed prod files
-        if: steps.filter.outputs.prod == 'true'
-        run: |
+         
          prod_applications=(${{ steps.filter.outputs.prod_files }})
          IFS=','
          filtered_prod_apps=()
@@ -59,21 +56,36 @@ jobs:
             filtered_prod_apps+=("$prod_application")  
          done
          echo "applications_prod=${filtered_prod_apps[@]}" >> $GITHUB_ENV
+                      
+   #   - name: List all changed prod files
+    #    if: steps.filter.outputs.prod == 'true'
+     #   run: |
+     #    prod_applications=(${{ steps.filter.outputs.prod_files }})
+     #    IFS=','
+      #   filtered_prod_apps=()
+      #   for prod_file in ${prod_applications[@]}; do
+       #     prod_base="$(dirname $prod_file)"
+       #     prod_application="$(basename $prod_base)"
+       #     filtered_prod_apps+=("$prod_application")  
+       #  done
+       #  echo "applications_prod=${filtered_prod_apps[@]}" >> $GITHUB_ENV
          
-      - name: deploy-staging
+      - name: set-matrix 
         id: set-matrix-staging
-        if: steps.filter.outputs.staging == 'true'
+        if: steps.filter.outputs.staging == 'true' || steps.filter.outputs.prod == 'true'
         run: | 
          echo "${{ env.applications_staging }}"
          echo "::set-output name=matrix-staging::$(echo ${{ env.applications_staging }} | tr -d '\n' | jq -R -s -c 'split(" ")')"
-
-         
-      - name: deploy-prod
-        id: set-matrix-prod
-        if: steps.filter.outputs.prod == 'true'
-        run: | 
          echo "${{ env.applications_prod }}"
          echo "::set-output name=matrix-prod::$(echo ${{ env.applications_prod }} | tr -d '\n' | jq -R -s -c 'split(" ")')"
+
+         
+      #- name: deploy-prod
+       # id: set-matrix-prod
+       # if: steps.filter.outputs.prod == 'true'
+       # run: | 
+        # echo "${{ env.applications_prod }}"
+        # echo "::set-output name=matrix-prod::$(echo ${{ env.applications_prod }} | tr -d '\n' | jq -R -s -c 'split(" ")')"
          
   prod_dts: 
     needs: set_up
