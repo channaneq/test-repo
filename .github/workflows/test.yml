@@ -162,6 +162,7 @@ jobs:
          echo "::set-output name=matrix-prod::$(echo ${{ env.applications_prod }} | tr -d '\n' | jq -R -s -c 'split(" ")')"
          
          #${{ needs.set_up.steps.filter.outputs.prod == 'true' }}
+  
   prod_dts: 
     needs: set_up
     if: ${{ needs.set_up.steps.filter.outputs.prod_files != '[]' }}
@@ -171,20 +172,8 @@ jobs:
       matrix: 
        value: ${{ fromJson(needs.set_up.outputs.matrix-prod) }}
     steps:
-    - name: Check out repository
-      uses: actions/checkout@v2
-    - name: Report deployment - start
-      uses: everquoteinc/deployment-tracker-action@v1
-      with:
-        application-name: ${{ matrix.value }}
-        environment: prod
-        platform: cloud-engineering
-        deployment-status: start
-        aws-region: us-east-1
-        role-to-assume: arn:aws:iam::818416785210:role/devtools-pipeline-common-access
-  #  steps:
-  #  - run: echo ${{ matrix.value }}
-    
+    - run: echo ${{ matrix.value }}
+
   staging_dts: 
     needs: set_up
     if: ${{ needs.set_up.steps.filter.outputs.staging_files != '[]' }}
