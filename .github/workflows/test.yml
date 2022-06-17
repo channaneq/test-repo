@@ -6,7 +6,6 @@ on:
       - master
     paths:
       - 'deploy/**'
-
 jobs:
   set_up:
     runs-on: ubuntu-latest
@@ -16,7 +15,9 @@ jobs:
       contents: read
     outputs:
       matrix-prod: ${{ steps.set-matrix.outputs.matrix-prod }}
+      matrix-prod-zones: ${{ steps.set-matrix.outputs.matrix-prod-zones}}
       matrix-staging: ${{ steps.set-matrix.outputs.matrix-staging }}
+      matrix-staging-zones: ${{ steps.set-matrix.outputs.matrix-staging-zones}}
     steps:
       - name: Checkout
         uses: actions/checkout@v2
@@ -37,7 +38,7 @@ jobs:
       - name: List all changed files
         if: steps.filter.outputs.staging == 'true' || steps.filter.outputs.prod == 'true'
         run: |
-         echo "${{ steps.filter.outputs.staging_files }}"
+         # Dealing with the changed staging files
          staging_applications=(${{ steps.filter.outputs.staging_files }})
          IFS=','
          filtered_staging_apps=()
@@ -48,8 +49,7 @@ jobs:
          done
          echo "applications_staging=${filtered_staging_apps[@]}" >> $GITHUB_ENV
          
-         echo "${{ steps.filter.outputs.prod_files }}"
-
+         # Dealing with the changed prod files (if any)
          prod_applications=(${{ steps.filter.outputs.prod_files }})
          IFS=','
          filtered_prod_apps=()
@@ -69,8 +69,7 @@ jobs:
          echo "${{ env.applications_prod }}"
          echo "::set-output name=matrix-prod::$(echo ${{ env.applications_prod }} | tr -d '\n' | jq -R -s -c 'split(" ")')"
          
-         #${{ needs.set_up.steps.filter.outputs.prod == 'true' }}
-  prod_dts: 
+  prod_dts: # this step will only run if there are changed prod files
     needs: set_up
     if: ${{ needs.set_up.steps.filter.outputs.prod_files == 'true' }}
     runs-on: ubuntu-latest
@@ -79,23 +78,11 @@ jobs:
       matrix: 
        value: ${{ fromJson(needs.set_up.outputs.matrix-prod) }}
     steps:
-    - name: Check out repository
-      uses: actions/checkout@v2
-    - name: Report deployment - start
-      uses: everquoteinc/deployment-tracker-action@v1
-      with:
-        application-name: ${{ matrix.value }}
-        environment: prod
-        platform: cloud-engineering
-        deployment-status: start
-        aws-region: us-east-1
-        role-to-assume: arn:aws:iam::818416785210:role/devtools-pipeline-common-access
-  #  steps:
-  #  - run: echo ${{ matrix.value }}
-    
-  staging_dts: 
+    - run: echo ${{ matrix.value }}
+          
+  staging_dts:  # this step will only run if there are changed staging files
     needs: set_up
-    if: ${{ needs.set_up.steps.filter.outputs.staging_files != '[]' }}
+    if: ${{ needs.set_up.steps.filter.outputs.staging_files == 'true' }}
     runs-on: ubuntu-latest
     strategy:
       max-parallel: 1
@@ -103,18 +90,3 @@ jobs:
        value: ${{ fromJson(needs.set_up.outputs.matrix-staging) }}
     steps:
     - run: echo ${{ matrix.value }}
-
-
-                 
-      
-
-     # - name: Test deployment tracker
-      #  uses: everquoteinc/deployment-tracker-action@v1
-       # with:
-        #  application-name: deployment-tracker-action
-         # platform: "developer experience"
-         # environment: unspec
-         # deployment-status: start
-        #  aws-region: us-east-1
-          
-          
