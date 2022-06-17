@@ -62,7 +62,7 @@ jobs:
          
       - name: set-matrix 
         id: set-matrix
-        if: steps.filter.outputs.staging == 'true' || steps.filter.outputs.prod == 'true'
+        if: steps.filter.outputs.staging_files == 'true' || steps.filter.outputs.prod_files == 'true'
         run: | 
          echo "${{ env.applications_staging }}"
          echo "::set-output name=matrix-staging::$(echo ${{ env.applications_staging }} | tr -d '\n' | jq -R -s -c 'split(" ")')"
