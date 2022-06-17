@@ -69,20 +69,20 @@ jobs:
          echo "${{ env.applications_prod }}"
          echo "::set-output name=matrix-prod::$(echo ${{ env.applications_prod }} | tr -d '\n' | jq -R -s -c 'split(" ")')"
          
-  prod_dts: # this step will only run if there are changed prod files
-    needs: set_up
-    if: ${{ needs.set_up.steps.filter.outputs.prod_files == true }}
-    runs-on: ubuntu-latest
-    strategy:
-      max-parallel: 1
-      matrix: 
-       value: ${{ fromJson(needs.set_up.outputs.matrix-prod) }}
-    steps:
-    - run: echo ${{ matrix.value }}
+ # prod_dts: # this step will only run if there are changed prod files
+ #   needs: set_up
+  #  if: ${{ needs.set_up.steps.filter.outputs.prod_files == true }}
+  #  runs-on: ubuntu-latest
+  #  strategy:
+   #   max-parallel: 1
+   #   matrix: 
+    #   value: ${{ fromJson(needs.set_up.outputs.matrix-prod) }}
+   # steps:
+  #  - run: echo ${{ matrix.value }}
           
   staging_dts:  # this step will only run if there are changed staging files
     needs: set_up
-    if: ${{ needs.set_up.steps.filter.outputs.staging_files == true }}
+    if: ${{ needs.set_up.steps.filter.outputs.staging_files == 'true' }}
     runs-on: ubuntu-latest
     strategy:
       max-parallel: 1
