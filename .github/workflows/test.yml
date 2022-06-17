@@ -72,7 +72,7 @@ jobs:
          #${{ needs.set_up.steps.filter.outputs.prod == 'true' }}
   prod_dts: 
     needs: set_up
-    if: ${{ needs.set_up.steps.filter.outputs.prod_files == '[]' }}
+    if: ${{ needs.set_up.steps.filter.outputs.prod_files == 'true' }}
     runs-on: ubuntu-latest
     strategy:
       max-parallel: 1
