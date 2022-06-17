@@ -92,6 +92,7 @@ jobs:
     if: needs.set_up.outputs.matrix-prod != null
     runs-on: ubuntu-latest
     strategy:
+      max-parallel: 1
       matrix: 
        value: ${{ fromJson(needs.set_up.outputs.matrix-prod) }}
     steps:
@@ -114,6 +115,7 @@ jobs:
     if: needs.set_up.outputs.matrix-staging != null
     runs-on: ubuntu-latest
     strategy:
+      max-parallel: 1
       matrix: 
        value: ${{ fromJson(needs.set_up.outputs.matrix-staging) }}
     steps:
