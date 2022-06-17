@@ -66,8 +66,8 @@ jobs:
         run: | 
          echo "${{ env.applications_staging }}"
          echo "::set-output name=matrix-staging::$(echo ${{ env.applications_staging }} | tr -d '\n' | jq -R -s -c 'split(" ")')"
-         echo "${{ env.applications_prod }}"
-         echo "::set-output name=matrix-prod::$(echo ${{ env.applications_prod }} | tr -d '\n' | jq -R -s -c 'split(" ")')"
+        #echo "${{ env.applications_prod }}"
+         #echo "::set-output name=matrix-prod::$(echo ${{ env.applications_prod }} | tr -d '\n' | jq -R -s -c 'split(" ")')"
          
   prod_dts: # this step will only run if there are changed prod files
     needs: set_up
