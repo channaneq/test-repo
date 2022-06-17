@@ -71,7 +71,7 @@ jobs:
          
   prod_dts: # this step will only run if there are changed prod files
     needs: set_up
-    if: ${{ needs.set_up.steps.filter.outputs.prod_files == true }}
+    if: ${{ needs.set_up.steps.filter.outputs.prod_files == 'true' }}
     runs-on: ubuntu-latest
     strategy:
       max-parallel: 1
