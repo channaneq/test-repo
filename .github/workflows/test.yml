@@ -37,6 +37,7 @@ jobs:
       - name: List all changed files
         if: steps.filter.outputs.staging == 'true' || steps.filter.outputs.prod == 'true'
         run: |
+         echo "${{ steps.filter.outputs.staging_files }}"
          staging_applications=(${{ steps.filter.outputs.staging_files }})
          IFS=','
          filtered_staging_apps=()
@@ -47,6 +48,8 @@ jobs:
          done
          echo "applications_staging=${filtered_staging_apps[@]}" >> $GITHUB_ENV
          
+         echo "${{ steps.filter.outputs.prod_files }}"
+
          prod_applications=(${{ steps.filter.outputs.prod_files }})
          IFS=','
          filtered_prod_apps=()
