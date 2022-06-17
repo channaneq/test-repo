@@ -66,8 +66,8 @@ jobs:
         run: | 
          echo "${{ env.applications_staging }}"
          echo "::set-output name=matrix-staging::$(echo ${{ env.applications_staging }} | tr -d '\n' | jq -R -s -c 'split(" ")')"
-       #  echo "${{ env.applications_prod }}"
-         #echo "::set-output name=matrix-prod::$(echo ${{ env.applications_prod }} | tr -d '\n' | jq -R -s -c 'split(" ")')"
+         echo "${{ env.applications_prod }}"
+         echo "::set-output name=matrix-prod::$(echo ${{ env.applications_prod }} | tr -d '\n' | jq -R -s -c 'split(" ")')"
          
          #${{ needs.set_up.steps.filter.outputs.prod == 'true' }}
   prod_dts: 
