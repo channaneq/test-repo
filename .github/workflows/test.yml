@@ -68,7 +68,7 @@ jobs:
          
   prod_dts: 
     needs: set_up
-    if: set_up.steps.filter.outputs.prod == 'true'
+    if: needs.set_up.steps.filter.outputs.prod == 'true'
     runs-on: ubuntu-latest
     strategy:
       max-parallel: 1
@@ -91,7 +91,7 @@ jobs:
     
   staging_dts: 
     needs: set_up
-    if: set_up.steps.filter.outputs.staging == 'true'
+    if: needs.set_up.steps.filter.outputs.staging == 'true'
     runs-on: ubuntu-latest
     strategy:
       max-parallel: 1
