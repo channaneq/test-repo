@@ -15,8 +15,8 @@ jobs:
       id-token: write
       contents: read
     outputs:
-      matrix-prod: ${{ steps.set-matrix-prod.outputs.matrix-prod }}
-      matrix-staging: ${{ steps.set-matrix-staging.outputs.matrix-staging }}
+      matrix-prod: ${{ steps.set-matrix.outputs.matrix-prod }}
+      matrix-staging: ${{ steps.set-matrix.outputs.matrix-staging }}
     steps:
       - name: Checkout
         uses: actions/checkout@v2
@@ -71,7 +71,7 @@ jobs:
        #  echo "applications_prod=${filtered_prod_apps[@]}" >> $GITHUB_ENV
          
       - name: set-matrix 
-        id: set-matrix-staging
+        id: set-matrix
         if: steps.filter.outputs.staging == 'true' || steps.filter.outputs.prod == 'true'
         run: | 
          echo "${{ env.applications_staging }}"
