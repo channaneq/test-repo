@@ -108,8 +108,6 @@ jobs:
       id-token: write
       contents: read
     outputs:
-      staging: ${{ steps.filter.outputs.staging }}
-      prod: ${{ steps.filter.outputs.prod }}
       matrix-prod: ${{ steps.set-matrix.outputs.matrix-prod }}
       matrix-staging: ${{ steps.set-matrix.outputs.matrix-staging }}
     steps:
@@ -167,7 +165,7 @@ jobs:
   
   prod_dts: 
     needs: set_up
-    if: ${{ needs.set_up.filter.outputs.prod == 'true' }}
+    if: ${{ needs.set_up.filter.outputs.prod != '[]' }}
     runs-on: ubuntu-latest
     strategy:
       max-parallel: 1
@@ -178,7 +176,7 @@ jobs:
 
   staging_dts: 
     needs: set_up
-    if: ${{ needs.set_up.filter.outputs.staging == 'true' }}
+    if: ${{ needs.set_up.filter.outputs.staging != '[]' }}
     runs-on: ubuntu-latest
     strategy:
       max-parallel: 1
