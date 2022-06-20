@@ -86,10 +86,10 @@ jobs:
             filtered_prod_clusters+=("$prod_cluster_name")
          fi
          done
-         done
+         
          echo "applications_prod=${filtered_prod_apps[@]}" >> $GITHUB_ENV
          echo "clusters_prod=${filtered_prod_clusters[@]}" >> $GITHUB_ENV
-
+         done
       - name: set-matrix 
         id: set-matrix
         if: steps.filter.outputs.staging == 'true' || steps.filter.outputs.prod == 'true'
