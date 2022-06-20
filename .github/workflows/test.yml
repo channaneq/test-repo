@@ -39,21 +39,34 @@ jobs:
       - name: List all changed files
         if: steps.filter.outputs.staging == 'true' || steps.filter.outputs.prod == 'true'
         run: |
-         echo "${{ steps.filter.outputs.staging_files }}"
          staging_applications=(${{ steps.filter.outputs.staging_files }})
          IFS=','
          filtered_staging_apps=()
+         filtered_staging_clusters=()
+         filtered_prod_apps=()
+         filtered_prod_clusters=()
+         
+         # Get the staging application names first
          for staging_file in ${staging_applications[@]}; do
             staging_base="$(dirname $staging_file)"
             staging_application="$(basename $staging_base)"
             filtered_staging_apps+=("$staging_application") 
+         # Get the staging cluster names 
+         if [[ $staging_file == *base-config*]];
+         then
+            staging_cluster_name=$(dirname $staging_file)
+            filtered_staging_clusters+=("$staging_cluster_name")
+         else
+            staging_filter_1=$(dirname $staging_file)
+            staging_filter_2=$(dirname $staging_filter_1)
+            staging_cluster_name=$(basename $staging_filter_2)
+            filtered_staging_clusters+=("$staging_cluster_name")
          done
          echo "applications_staging=${filtered_staging_apps[@]}" >> $GITHUB_ENV
+         echo ${filtered_staging_clusters[@]} |  tr -d '\n' | jq -R -s -c 'split(" ")'
          
-         echo "${{ steps.filter.outputs.prod_files }}"
          prod_applications=(${{ steps.filter.outputs.prod_files }})
          IFS=','
-         filtered_prod_apps=()
          for prod_file in ${prod_applications[@]}; do
             prod_base="$(dirname $prod_file)"
             prod_application="$(basename $prod_base)"
@@ -92,3 +105,24 @@ jobs:
     steps:
     - run: echo ${{ matrix.value }}
 
+ # env_name=()
+  #prod_applications_1=()
+  for file in $prod_applications; do
+# Get the application name first
+     base=$(dirname $file)
+     application=$(basename $base)
+     prod_applications_1+=("$application")
+# Now get the cluster name 
+  if [[ $file == *base-config* ]]; 
+  then
+     base2=$(dirname $base)
+     env_name+=("$base2")
+  else
+     base2=$(dirname $base)
+     base3=$(dirname $base2 )
+     base4=$(basename $base3)
+     env_name+=("$base4")
+  fi  
+  done
+echo ${prod_applications_1[@]} |  tr -d '\n' | jq -R -s -c 'split(" ")' 
+echo ${env_name[@]} |  tr -d '\n' | jq -R -s -c 'split(" ")' 
