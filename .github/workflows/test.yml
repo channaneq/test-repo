@@ -19,6 +19,9 @@ jobs:
       prod: ${{ steps.filter.outputs.prod }}
       matrix-prod: ${{ steps.set-matrix.outputs.matrix-prod }}
       matrix-staging: ${{ steps.set-matrix.outputs.matrix-staging }}
+      matrix-staging-clusters: ${{steps.set-matrix-outputs.matrix-staging-clusters}}
+      matrix-prod-clusters: ${{steps.set-matrix-outputs.matrix-prod-clusters}}
+
     steps:
       - name: Checkout
         uses: actions/checkout@v2
@@ -96,8 +99,14 @@ jobs:
         run: | 
          echo "${{ env.applications_staging }}"
          echo "::set-output name=matrix-staging::$(echo ${{ env.applications_staging }} | tr -d '\n' | jq -R -s -c 'split(" ")')"
+         echo "${{ env.clusters_staging }}"
+         echo "::set-output name=matrix-staging-clusters::$(echo ${{ env.clusters_staging }} | tr -d '\n' | jq -R -s -c 'split(" ")')"
          echo "${{ env.applications_prod }}"
          echo "::set-output name=matrix-prod::$(echo ${{ env.applications_prod }} | tr -d '\n' | jq -R -s -c 'split(" ")')"
+         echo "${{ env.clusters_prod }}"
+         echo "::set-output name=matrix-prod-clusters::$(echo ${{ env.clusters_prod }} | tr -d '\n' | jq -R -s -c 'split(" ")')"
+         
+         
            
   prod_dts: 
     needs: set_up
@@ -106,9 +115,11 @@ jobs:
     strategy:
       max-parallel: 1
       matrix: 
-       value: ${{ fromJson(needs.set_up.outputs.matrix-prod) }}
+       app-value: ${{ fromJson(needs.set_up.outputs.matrix-prod) }}
+       cluster-value: ${{ fromJson(needs.set_up.outputs.matrix-prod-clusters) }}
     steps:
-    - run: echo ${{ matrix.value }}
+    - run: echo ${{ matrix.app-value }}
+           echo ${{ matrix.cluster-value }}
 
   staging_dts: 
     needs: set_up
@@ -117,6 +128,8 @@ jobs:
     strategy:
       max-parallel: 1
       matrix: 
-       value: ${{ fromJson(needs.set_up.outputs.matrix-staging) }}
+       app-value: ${{ fromJson(needs.set_up.outputs.matrix-staging) }}
+       cluster-value: ${{ fromJson(needs.set_up.outputs.matrix-staging-clusters) }}
     steps:
-    - run: echo ${{ matrix.value }}
+    - run: echo ${{ matrix.app-value }}
+           echo ${{ matrix.cluster-value }}
