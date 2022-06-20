@@ -61,6 +61,7 @@ jobs:
             staging_filter_2=$(dirname $staging_filter_1)
             staging_cluster_name=$(basename $staging_filter_2)
             filtered_staging_clusters+=("$staging_cluster_name")
+         fi
          done
          echo "applications_staging=${filtered_staging_apps[@]}" >> $GITHUB_ENV
          echo ${filtered_staging_clusters[@]} |  tr -d '\n' | jq -R -s -c 'split(" ")'
