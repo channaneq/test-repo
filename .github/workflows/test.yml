@@ -71,8 +71,7 @@ jobs:
          echo "applications_staging=${filtered_staging_apps[@]}" >> $GITHUB_ENV
          echo "clusters_staging=${filtered_staging_clusters[@]}" >> $GITHUB_ENV
          
-         #IFS=','
-         for prod_file in ${prod_applications[@]}; do # Get application first
+         for prod_file in ${prod_applications[@]}; do # Get prod application 
             prod_base="$(dirname $prod_file)"
             prod_application="$(basename $prod_base)"
             filtered_prod_apps+=("$prod_application")  
