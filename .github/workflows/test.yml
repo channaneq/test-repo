@@ -54,12 +54,11 @@ jobs:
          # Get the staging cluster names 
          if [[ $staging_file == *base-config* ]]; # If the base config directory is changed we need to go through this
          then
-            staging_filter_1=$(dirname $staging_file)
+            staging_filter_1=$(dirname $staging_base)
             staging_cluster_name=$(basename $staging_filter_1)
-            
             filtered_staging_clusters+=("$staging_cluster_name")
          else
-            staging_filter_1=$(dirname $staging_file)
+            staging_filter_1=$(dirname $staging_base)
             staging_filter_2=$(dirname $staging_filter_1)
             staging_cluster_name=$(basename $staging_filter_2)
             filtered_staging_clusters+=("$staging_cluster_name")
