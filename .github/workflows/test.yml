@@ -38,8 +38,8 @@ jobs:
       - name: set-matrix 
         id: test
         run: | 
-          echo steps.filter.outputs.staging
-                                  echo steps.filter.outputs.prod
+          echo ${{ steps.filter.outputs.prod }}
+          echo ${{ steps.filter.outputs.staging }}
 
       - name: List all changed files
         if: steps.filter.outputs.staging == 'true' || steps.filter.outputs.prod == 'true'
