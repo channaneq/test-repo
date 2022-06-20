@@ -66,7 +66,7 @@ jobs:
          fi
          done
          echo "applications_staging=${filtered_staging_apps[@]}" >> $GITHUB_ENV
-         echo ${filtered_staging_clusters[@]} >> $GITHUB_ENV
+         echo "clusters_staging=${filtered_staging_clusters[@]}" >> $GITHUB_ENV
          
          #IFS=','
          for prod_file in ${prod_applications[@]}; do # Get application first
@@ -88,7 +88,7 @@ jobs:
          done
          done
          echo "applications_prod=${filtered_prod_apps[@]}" >> $GITHUB_ENV
-         echo ${filtered_staging_clusters[@]} >> $GITHUB_ENV
+         echo "clusters_prod=${filtered_prod_clusters[@]}" >> $GITHUB_ENV
 
       - name: set-matrix 
         id: set-matrix
