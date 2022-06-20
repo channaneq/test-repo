@@ -104,25 +104,3 @@ jobs:
        value: ${{ fromJson(needs.set_up.outputs.matrix-staging) }}
     steps:
     - run: echo ${{ matrix.value }}
-
- # env_name=()
-  #prod_applications_1=()
-  for file in $prod_applications; do
-# Get the application name first
-     base=$(dirname $file)
-     application=$(basename $base)
-     prod_applications_1+=("$application")
-# Now get the cluster name 
-  if [[ $file == *base-config* ]]; 
-  then
-     base2=$(dirname $base)
-     env_name+=("$base2")
-  else
-     base2=$(dirname $base)
-     base3=$(dirname $base2 )
-     base4=$(basename $base3)
-     env_name+=("$base4")
-  fi  
-  done
-echo ${prod_applications_1[@]} |  tr -d '\n' | jq -R -s -c 'split(" ")' 
-echo ${env_name[@]} |  tr -d '\n' | jq -R -s -c 'split(" ")' 
