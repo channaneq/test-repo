@@ -19,8 +19,8 @@ jobs:
       prod: ${{ steps.filter.outputs.prod }}
       matrix-prod: ${{ steps.set-matrix.outputs.matrix-prod }}
       matrix-staging: ${{ steps.set-matrix.outputs.matrix-staging }}
-      matrix-staging-clusters: ${{steps.set-matrix.outputs.matrix-staging-clusters}}
-      matrix-prod-clusters: ${{steps.set-matrix.outputs.matrix-prod-clusters}}
+      matrix-staging-clusters: ${{ steps.set-matrix.outputs.matrix-staging-clusters }}
+      matrix-prod-clusters: ${{ steps.set-matrix.outputs.matrix-prod-clusters }}
 
     steps:
       - name: Checkout
