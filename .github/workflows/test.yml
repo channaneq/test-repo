@@ -52,7 +52,7 @@ jobs:
             staging_application="$(basename $staging_base)"
             filtered_staging_apps+=("$staging_application") 
          # Get the staging cluster names 
-         if [[ $staging_file == *base-config*]];
+         if [[ $staging_file == *base-config* ]];
          then
             staging_cluster_name=$(dirname $staging_file)
             filtered_staging_clusters+=("$staging_cluster_name")
