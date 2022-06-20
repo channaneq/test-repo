@@ -15,9 +15,9 @@
 #      contents: read
 #    outputs:
 #      matrix-prod: ${{ steps.set-matrix.outputs.matrix-prod }}
-#      matrix-prod-zones: ${{ steps.set-matrix.outputs.matrix-prod-zones}}
+#      # matrix-prod-zones: ${{ steps.set-matrix.outputs.matrix-prod-zones}}
 #      matrix-staging: ${{ steps.set-matrix.outputs.matrix-staging }}
-#      matrix-staging-zones: ${{ steps.set-matrix.outputs.matrix-staging-zones}}
+#      # matrix-staging-zones: ${{ steps.set-matrix.outputs.matrix-staging-zones}}
 #    steps:
 #      - name: Checkout
 #        uses: actions/checkout@v2
@@ -108,6 +108,8 @@ jobs:
       id-token: write
       contents: read
     outputs:
+      staging: ${{ steps.filter.outputs.staging }}
+      prod: ${{ steps.filter.outputs.prod }}
       matrix-prod: ${{ steps.set-matrix.outputs.matrix-prod }}
       matrix-staging: ${{ steps.set-matrix.outputs.matrix-staging }}
     steps:
