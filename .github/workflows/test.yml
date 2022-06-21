@@ -108,12 +108,12 @@ jobs:
     if: ${{ needs.set_up.outputs.prod == 'true' }}
     runs-on: ubuntu-latest
     strategy:
-      #max-parallel: 1
+      max-parallel: 1
       matrix: 
         include:
-        - app-value: ${{ fromJson(needs.set_up.outputs.matrix-prod) }}
-          cluster-value: ${{ fromJson(needs.set_up.outputs.matrix-prod-clusters) }}
-       app-value: ${{ fromJson(needs.set_up.outputs.matrix-prod) }}
+          - app-value: ${{ fromJson(needs.set_up.outputs.matrix-prod) }}
+            cluster-value: ${{ fromJson(needs.set_up.outputs.matrix-prod-clusters) }}
+       #app-value: ${{ fromJson(needs.set_up.outputs.matrix-prod) }}
        # cluster-value: ${{ fromJson(needs.set_up.outputs.matrix-prod-clusters) }}
     steps:
     - run: echo ${{ matrix.app-value }}
@@ -124,11 +124,11 @@ jobs:
     if: ${{ needs.set_up.outputs.staging == 'true' }}
     runs-on: ubuntu-latest
     strategy:
-      #max-parallel: 1
+      max-parallel: 1
       matrix: 
         include:
-        - app-value: ${{ fromJson(needs.set_up.outputs.matrix-staging) }}
-          cluster-value: ${{ fromJson(needs.set_up.outputs.matrix-staging-clusters) }}
+          - app-value: ${{ fromJson(needs.set_up.outputs.matrix-staging) }}
+            cluster-value: ${{ fromJson(needs.set_up.outputs.matrix-staging-clusters) }}
        #app-value: ${{ fromJson(needs.set_up.outputs.matrix-staging) }}
        # cluster-value: ${{ fromJson(needs.set_up.outputs.matrix-staging-clusters) }}
     steps:
