@@ -61,8 +61,8 @@ jobs:
         id: set-matrix
         if: steps.filter.outputs.staging == 'true' || steps.filter.outputs.prod == 'true'
         run: | 
-         echo "::set-output name=matrix-staging::$(echo ${{ env.applications_staging }} | tr -d '\n' | jq -R -s -c 'split(" ")')"
-         echo "::set-output name=matrix-prod::$(echo ${{ env.applications_prod }} | tr -d '\n' | jq -R -s -c 'split(" ")')"
+         echo "::set-output name=matrix-staging::$(echo ${{ env.applications_staging }} | tr -d '\n' | tr -d "[]" | jq -R -s -c 'split(" ")')"
+         echo "::set-output name=matrix-prod::$(echo ${{ env.applications_prod }} | tr -d '\n' | | tr -d "[]" | jq -R -s -c 'split(" ")')"
          
          
            
@@ -73,7 +73,7 @@ jobs:
     strategy:
       max-parallel: 1
       matrix: 
-       app-value: ${{ fromJson(needs.set_up.outputs.matrix-prod) | tr -d "[]" }}
+       app-value: ${{ fromJson(needs.set_up.outputs.matrix-prod) }}
     steps:
     - run: echo ${{ matrix.app-value }}
 
@@ -84,6 +84,6 @@ jobs:
     strategy:
       max-parallel: 1
       matrix: 
-       app-value: ${{ fromJson(needs.set_up.outputs.matrix-staging) | tr -d "[]" }}
+       app-value: ${{ fromJson(needs.set_up.outputs.matrix-staging) }}
     steps:
     - run: echo ${{ matrix.app-value }}
