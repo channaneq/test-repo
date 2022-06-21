@@ -114,7 +114,7 @@ jobs:
        # cluster-value: ${{ fromJson(needs.set_up.outputs.matrix-prod-clusters) }}
     steps:
     - run: echo ${{ matrix.app-value }}
-           echo ${{ fromJson(needs.set_up.outputs.matrix-prod-clusters) }}
+           echo ${{ needs.set_up.outputs.matrix-prod-clusters }}
 
   staging_dts: 
     needs: set_up
@@ -127,4 +127,4 @@ jobs:
        # cluster-value: ${{ fromJson(needs.set_up.outputs.matrix-staging-clusters) }}
     steps:
     - run: echo ${{ matrix.app-value }}
-           echo ${{ fromJson(needs.set_up.outputs.matrix-staging-clusters) }}
+           echo ${{ needs.set_up.outputs.matrix-staging-clusters }}
