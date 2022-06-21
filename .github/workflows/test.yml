@@ -19,8 +19,6 @@ jobs:
       prod: ${{ steps.filter.outputs.prod }}
       matrix-prod: ${{ steps.set-matrix.outputs.matrix-prod }}
       matrix-staging: ${{ steps.set-matrix.outputs.matrix-staging }}
-     # matrix-staging-clusters: ${{ steps.set-matrix.outputs.matrix-staging-clusters }}
-     # matrix-prod-clusters: ${{ steps.set-matrix.outputs.matrix-prod-clusters }}
 
     steps:
       - name: Checkout
@@ -64,9 +62,7 @@ jobs:
         if: steps.filter.outputs.staging == 'true' || steps.filter.outputs.prod == 'true'
         run: | 
          echo "::set-output name=matrix-staging::$(echo ${{ env.applications_staging }} | tr -d '\n' | jq -R -s -c 'split(" ")')"
-         # echo "::set-output name=matrix-staging-clusters::$(echo ${{ env.clusters_staging }} | tr -d '\n' | jq -R -s -c 'split(" ")')"
          echo "::set-output name=matrix-prod::$(echo ${{ env.applications_prod }} | tr -d '\n' | jq -R -s -c 'split(" ")')"
-         # echo "::set-output name=matrix-prod-clusters::$(echo ${{ env.clusters_prod }} | tr -d '\n' | jq -R -s -c 'split(" ")')"
          
          
            
