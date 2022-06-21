@@ -49,14 +49,12 @@ jobs:
          
          # Get the staging application names first
          for staging_file in ${staging_applications[@]}; do
-            staging_base="$("$staging_file")"
-            filtered_staging_apps+=("$staging_base") 
+            filtered_staging_apps+=("$staging_file") 
          done
          echo "applications_staging=${filtered_staging_apps[@]}" >> $GITHUB_ENV
          
          for prod_file in ${prod_applications[@]}; do # Get prod application 
-            prod_base="$(dirname $prod_file)"
-            filtered_prod_apps+=("$prod_base") 
+            filtered_prod_apps+=("$prod_file") 
          done
          echo "applications_prod=${filtered_prod_apps[@]}" >> $GITHUB_ENV
          
