@@ -75,7 +75,17 @@ jobs:
       matrix: 
        app-value: ${{ fromJson(needs.set_up.outputs.matrix-prod) }}
     steps:
-    - run: echo ${{ matrix.app-value }}
+    - run: |
+        test=${{ matrix.app-value }}
+
+        base=$(dirname $test)
+        base1=$(basename $base) 
+        base2=$(dirname $base)
+        base3=$(dirname $base2)
+        base4=$(basename $base3)
+
+        echo $application_name
+        echo $cluster_name
 
   staging_dts: 
     needs: set_up
@@ -86,4 +96,14 @@ jobs:
       matrix: 
        app-value: ${{ fromJson(needs.set_up.outputs.matrix-staging) }}
     steps:
-    - run: echo ${{ matrix.app-value }}
+    - run: |
+        test=${{ matrix.app-value }}
+
+        base=$(dirname $test)
+        base1=$(basename $base) 
+        base2=$(dirname $base)
+        base3=$(dirname $base2)
+        base4=$(basename $base3)
+
+        echo $application_name
+        echo $cluster_name
