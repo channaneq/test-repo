@@ -75,17 +75,22 @@ jobs:
       matrix: 
        app-value: ${{ fromJson(needs.set_up.outputs.matrix-prod) }}
     steps:
-    - run: |
+    - name: get the name and cluster name
+      run: |
         test=${{ matrix.app-value }}
 
         base=$(dirname $test)
-        application_name=$(basename $base) 
+        prod_application_name=$(basename $base) 
         base2=$(dirname $base)
         base3=$(dirname $base2)
-        cluster_name=$(basename $base3)
+        prod_cluster_name=$(basename $base3)
 
-        echo $application_name
-        echo $cluster_name
+        echo $prod_application_name >> $GITHUB_ENV
+        echo $prod_cluster_name >> $GITHUB_ENV 
+    - name: test print prod variables 
+      run: |
+        echo "${{ env.prod_application_name }}"
+        echo "${{ env.prod_cluster_name }}"
 
   staging_dts: 
     needs: set_up
@@ -96,14 +101,19 @@ jobs:
       matrix: 
        app-value: ${{ fromJson(needs.set_up.outputs.matrix-staging) }}
     steps:
-    - run: |
+    - name: get the name and cluster name
+      run: |
         test=${{ matrix.app-value }}
 
         base=$(dirname $test)
-        application_name=$(basename $base) 
+        staging_application_name=$(basename $base) 
         base2=$(dirname $base)
         base3=$(dirname $base2)
-        cluster_name=$(basename $base3)
+        staging_cluster_name=$(basename $base3)
 
-        echo $application_name
-        echo $cluster_name
+        echo $staging_application_name >> $GITHUB_ENV 
+        echo $staging_cluster_name >> $GITHUB_ENV
+    - name: test print staging variables 
+      run: |
+        echo "${{ env.staging_application_name }}"
+        echo "${{ env.staging_cluster_name }}"
