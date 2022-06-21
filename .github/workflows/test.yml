@@ -61,8 +61,8 @@ jobs:
         id: set-matrix
         if: steps.filter.outputs.staging == 'true' || steps.filter.outputs.prod == 'true'
         run: | 
-         echo "::set-output name=matrix-staging::$(echo ${{ env.applications_staging }} | tr -d '\n' | jq -R -s -c 'split(" ")')"
-         echo "::set-output name=matrix-prod::$(echo ${{ env.applications_prod }} | tr -d '\n' | jq -R -s -c 'split(" ")')"
+         echo "::set-output name=matrix-staging::$(echo ${{ env.applications_staging }} | tr -d '[]' | tr -d '\n' | jq -R -s -c 'split(" ")')"
+         echo "::set-output name=matrix-prod::$(echo ${{ env.applications_prod }} | tr -d '[]' | tr -d '\n' | jq -R -s -c 'split(" ")')"
          
          
            
