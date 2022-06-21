@@ -108,7 +108,7 @@ jobs:
     if: ${{ needs.set_up.outputs.prod == 'true' }}
     runs-on: ubuntu-latest
     strategy:
-      max-parallel: 1
+      #max-parallel: 1
       matrix: 
         include:
         - app-value: ${{ fromJson(needs.set_up.outputs.matrix-prod) }}
@@ -124,7 +124,7 @@ jobs:
     if: ${{ needs.set_up.outputs.staging == 'true' }}
     runs-on: ubuntu-latest
     strategy:
-      max-parallel: 1
+      #max-parallel: 1
       matrix: 
         include:
         - app-value: ${{ fromJson(needs.set_up.outputs.matrix-staging) }}
