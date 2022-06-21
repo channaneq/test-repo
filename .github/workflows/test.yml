@@ -79,10 +79,10 @@ jobs:
         test=${{ matrix.app-value }}
 
         base=$(dirname $test)
-        base1=$(basename $base) 
+        application_name=$(basename $base) 
         base2=$(dirname $base)
         base3=$(dirname $base2)
-        base4=$(basename $base3)
+        cluster_name=$(basename $base3)
 
         echo $application_name
         echo $cluster_name
@@ -100,10 +100,10 @@ jobs:
         test=${{ matrix.app-value }}
 
         base=$(dirname $test)
-        base1=$(basename $base) 
+        application_name=$(basename $base) 
         base2=$(dirname $base)
         base3=$(dirname $base2)
-        base4=$(basename $base3)
+        cluster_name=$(basename $base3)
 
         echo $application_name
         echo $cluster_name
