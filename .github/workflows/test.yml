@@ -38,7 +38,6 @@ jobs:
               - 'deploy/*staging/**'
             prod:
               - 'deploy/*prod/**'
-
       - name: List all changed files
         if: steps.filter.outputs.staging == 'true' || steps.filter.outputs.prod == 'true'
         run: |
@@ -110,11 +109,8 @@ jobs:
     strategy:
       max-parallel: 1
       matrix: 
-        include:
-          - app-value: ${{ fromJson(needs.set_up.outputs.matrix-prod) }}
-            cluster-value: ${{ fromJson(needs.set_up.outputs.matrix-prod-clusters) }}
-       #app-value: ${{ fromJson(needs.set_up.outputs.matrix-prod) }}
-       # cluster-value: ${{ fromJson(needs.set_up.outputs.matrix-prod-clusters) }}
+       app-value: ${{ fromJson(needs.set_up.outputs.matrix-prod) }}
+       cluster-value: ${{ fromJson(needs.set_up.outputs.matrix-prod-clusters) }}
     steps:
     - run: echo ${{ matrix.app-value }}
            echo ${{ matrix.cluster-value }}
@@ -126,11 +122,8 @@ jobs:
     strategy:
       max-parallel: 1
       matrix: 
-        include:
-          - app-value: ${{ fromJson(needs.set_up.outputs.matrix-staging) }}
-            cluster-value: ${{ fromJson(needs.set_up.outputs.matrix-staging-clusters) }}
-       #app-value: ${{ fromJson(needs.set_up.outputs.matrix-staging) }}
-       # cluster-value: ${{ fromJson(needs.set_up.outputs.matrix-staging-clusters) }}
+       app-value: ${{ fromJson(needs.set_up.outputs.matrix-staging) }}
+       cluster-value: ${{ fromJson(needs.set_up.outputs.matrix-staging-clusters) }}
     steps:
     - run: echo ${{ matrix.app-value }}
            echo ${{ matrix.cluster-value }}
