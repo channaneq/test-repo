@@ -85,8 +85,8 @@ jobs:
         base3=$(dirname $base2)
         prod_cluster_name=$(basename $base3)
 
-        echo $prod_application_name >> $GITHUB_ENV
-        echo $prod_cluster_name >> $GITHUB_ENV 
+        echo "$prod_application_name" >> $GITHUB_ENV
+        echo "$prod_cluster_name" >> $GITHUB_ENV 
     - name: test print prod variables 
       run: |
         echo "${{ env.prod_application_name }}"
@@ -111,8 +111,8 @@ jobs:
         base3=$(dirname $base2)
         staging_cluster_name=$(basename $base3)
 
-        echo $staging_application_name >> $GITHUB_ENV 
-        echo $staging_cluster_name >> $GITHUB_ENV
+        echo "$staging_application_name" >> $GITHUB_ENV 
+        echo "$staging_cluster_name" >> $GITHUB_ENV
     - name: test print staging variables 
       run: |
         echo "${{ env.staging_application_name }}"
