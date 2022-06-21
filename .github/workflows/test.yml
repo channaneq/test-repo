@@ -111,10 +111,10 @@ jobs:
       max-parallel: 1
       matrix: 
        app-value: ${{ fromJson(needs.set_up.outputs.matrix-prod) }}
-       cluster-value: ${{ fromJson(needs.set_up.outputs.matrix-prod-clusters) }}
+       # cluster-value: ${{ fromJson(needs.set_up.outputs.matrix-prod-clusters) }}
     steps:
     - run: echo ${{ matrix.app-value }}
-           echo ${{ matrix.cluster-value }}
+           echo ${{ fromJson(needs.set_up.outputs.matrix-prod-clusters) }}
 
   staging_dts: 
     needs: set_up
@@ -124,7 +124,7 @@ jobs:
       max-parallel: 1
       matrix: 
        app-value: ${{ fromJson(needs.set_up.outputs.matrix-staging) }}
-       cluster-value: ${{ fromJson(needs.set_up.outputs.matrix-staging-clusters) }}
+       # cluster-value: ${{ fromJson(needs.set_up.outputs.matrix-staging-clusters) }}
     steps:
     - run: echo ${{ matrix.app-value }}
-           echo ${{ matrix.cluster-value }}
+           echo ${{ fromJson(needs.set_up.outputs.matrix-staging-clusters) }}
