@@ -52,7 +52,7 @@ jobs:
         run: | 
          echo "::set-output name=matrix_files::$(echo ${{ env.filtered_applications }} | tr -d '[]' | tr -d '\n' | jq -R -s -c 'split(" ")')"         
          
-  prod_dts: 
+  dts_job: 
     needs: set_up
     if: ${{ needs.set_up.outputs.all_files == 'true' }}
     runs-on: ubuntu-latest
