@@ -76,8 +76,9 @@ jobs:
        # echo "prod_application_name=$base1" >> $GITHUB_ENV
        # echo "prod_cluster_name=$base4" >> $GITHUB_ENV
 
-  #  - name: test print prod variables 
-      #run: |
-       # echo "${{ env.prod_application_name }}" 
-       # echo "${{ env.prod_cluster_name }}" 
+    - name: test print prod variables 
+      run: |
+       echo cluster is: "${{ env.cluster }}" 
+       echo application is: "${{ env.application }}" 
+       echo environment is: "${{env.environment }}"
 
