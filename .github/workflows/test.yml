@@ -36,7 +36,7 @@ jobs:
       - name: List all changed files
         if: steps.filter.outputs.all_files == 'true'
         run: |
-         all_applications=(${{ steps.filter.outputs.all_files }})
+         all_applications=(${{ steps.filter.outputs.all_files_files }})
          IFS=','
          filtered_apps=()
          
