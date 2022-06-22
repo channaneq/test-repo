@@ -16,7 +16,7 @@ jobs:
       contents: read
     outputs:
       all_files: ${{ steps.filter.outputs.all_files }}
-      matrix_files: ${{ steps.set-matrix.outputs.matrix_staging }}
+      matrix_files: ${{ steps.set-matrix.outputs.matrix_files }}
 
     steps:
       - name: Checkout
@@ -44,13 +44,13 @@ jobs:
          for file in ${all_applications[@]}; do
             filtered_apps+=("$file") 
          done
-         echo "applications_staging=${filtered_apps[@]}" >> $GITHUB_ENV         
+         echo "filtered_applications=${filtered_apps[@]}" >> $GITHUB_ENV         
          
       - name: set-matrix 
         id: set-matrix
         if: steps.filter.outputs.all_files == 'true'
         run: | 
-         echo "::set-output name=matrix_staging::$(echo ${{ env.applications_staging }} | tr -d '[]' | tr -d '\n' | jq -R -s -c 'split(" ")')"         
+         echo "::set-output name=matrix_files::$(echo ${{ env.filtered_applications }} | tr -d '[]' | tr -d '\n' | jq -R -s -c 'split(" ")')"         
          
   prod_dts: 
     needs: set_up
