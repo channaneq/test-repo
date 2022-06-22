@@ -16,7 +16,7 @@ jobs:
       contents: read
     outputs:
       all_files: ${{ steps.filter.outputs.all_files }}
-      matrix-files: ${{ steps.set-matrix.outputs.matrix-staging }}
+      matrix_files: ${{ steps.set-matrix.outputs.matrix_staging }}
 
     steps:
       - name: Checkout
@@ -50,7 +50,7 @@ jobs:
         id: set-matrix
         if: steps.filter.outputs.all_files == 'true'
         run: | 
-         echo "::set-output name=matrix-files::$(echo ${{ env.all_files }} | tr -d '[]' | tr -d '\n' | jq -R -s -c 'split(" ")')"         
+         echo "::set-output name=matrix_files::$(echo ${{ env.applications_staging }} | tr -d '[]' | tr -d '\n' | jq -R -s -c 'split(" ")')"         
          
   prod_dts: 
     needs: set_up
@@ -59,7 +59,7 @@ jobs:
     strategy:
       max-parallel: 1
       matrix: 
-       app-value: ${{ fromJson(needs.set_up.outputs.matrix-files) }}
+       app-value: ${{ fromJson(needs.set_up.outputs.matrix_files) }}
     steps:
     - name: get the name and cluster name
       run: |
