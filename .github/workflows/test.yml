@@ -68,14 +68,10 @@ jobs:
           application=$(awk -F/ '{print $(NF-1)}' <<< "$test")
           environment=$(awk -F- '{print $NF}' <<< "$cluster")
           
-          echo cluster is: $cluster
-          echo application is: $application
-          echo environment is: $environment
-
-        
-       # echo "prod_application_name=$base1" >> $GITHUB_ENV
-       # echo "prod_cluster_name=$base4" >> $GITHUB_ENV
-
+          echo "cluster=$cluster" >> $GITHUB_ENV
+          echo "application=$application" >> $GITHUB_ENV
+          echo "environment=$environment" >> $GITHUB_ENV
+          
     - name: test print prod variables 
       run: |
        echo cluster is: "${{ env.cluster }}" 
