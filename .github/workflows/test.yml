@@ -15,10 +15,8 @@ jobs:
       id-token: write
       contents: read
     outputs:
-      staging: ${{ steps.filter.outputs.staging }}
-      prod: ${{ steps.filter.outputs.prod }}
-      matrix-prod: ${{ steps.set-matrix.outputs.matrix-prod }}
-      matrix-staging: ${{ steps.set-matrix.outputs.matrix-staging }}
+      all_files: ${{ steps.filter.outputs.all_files }}
+      matrix-files: ${{ steps.set-matrix.outputs.matrix-staging }}
 
     steps:
       - name: Checkout
@@ -32,90 +30,54 @@ jobs:
         with:
           list-files: json
           filters: |
-            staging:
-              - 'deploy/*staging/**'
-            prod:
-              - 'deploy/*prod/**'
+            all_files:
+              - 'deploy/**/**'
+
       - name: List all changed files
-        if: steps.filter.outputs.staging == 'true' || steps.filter.outputs.prod == 'true'
+        if: steps.filter.outputs.all_files == 'true'
         run: |
-         staging_applications=(${{ steps.filter.outputs.staging_files }})
-         prod_applications=(${{ steps.filter.outputs.prod_files }})
+         all_applications=(${{ steps.filter.outputs.all_files }})
          IFS=','
-         filtered_staging_apps=()
-         filtered_prod_apps=()
+         filtered_apps=()
          
-         # Get the staging application names first
-         for staging_file in ${staging_applications[@]}; do
-            filtered_staging_apps+=("$staging_file") 
+         # Get the application names first
+         for file in ${all_applications[@]}; do
+            filtered_apps+=("$file") 
          done
-         echo "applications_staging=${filtered_staging_apps[@]}" >> $GITHUB_ENV
-         
-         for prod_file in ${prod_applications[@]}; do # Get prod application 
-            filtered_prod_apps+=("$prod_file") 
-         done
-         echo "applications_prod=${filtered_prod_apps[@]}" >> $GITHUB_ENV
-         
+         echo "applications_staging=${filtered_apps[@]}" >> $GITHUB_ENV         
          
       - name: set-matrix 
         id: set-matrix
-        if: steps.filter.outputs.staging == 'true' || steps.filter.outputs.prod == 'true'
+        if: steps.filter.outputs.all_files == 'true'
         run: | 
-         echo "::set-output name=matrix-staging::$(echo ${{ env.applications_staging }} | tr -d '[]' | tr -d '\n' | jq -R -s -c 'split(" ")')"
-         echo "::set-output name=matrix-prod::$(echo ${{ env.applications_prod }} | tr -d '[]' | tr -d '\n' | jq -R -s -c 'split(" ")')"
+         echo "::set-output name=matrix-files::$(echo ${{ env.all_files }} | tr -d '[]' | tr -d '\n' | jq -R -s -c 'split(" ")')"         
          
-         
-           
   prod_dts: 
     needs: set_up
-    if: ${{ needs.set_up.outputs.prod == 'true' }}
+    if: ${{ needs.set_up.outputs.all_files == 'true' }}
     runs-on: ubuntu-latest
     strategy:
       max-parallel: 1
       matrix: 
-       app-value: ${{ fromJson(needs.set_up.outputs.matrix-prod) }}
+       app-value: ${{ fromJson(needs.set_up.outputs.matrix-files) }}
     steps:
     - name: get the name and cluster name
       run: |
-        test=${{ matrix.app-value }}
+          test=${{ matrix.app-value }}
+          cluster=$(awk -F/ '{print $2}' <<< "$test")
+          application=$(awk -F/ '{print $(NF-1)}' <<< "$test")
+          environment=$(awk -F- '{print $NF}' <<< "$cluster")
+          
+          echo cluster is: $cluster
+          echo application is: $application
+          echo environment is: $environment
 
-        base=$(dirname $test)
-        base1=$(basename $base) 
-        base2=$(dirname $base)
-        base3=$(dirname $base2)
-        base4=$(basename $base3)
         
-        echo "prod_application_name=$base1" >> $GITHUB_ENV
-        echo "prod_cluster_name=$base4" >> $GITHUB_ENV
+       # echo "prod_application_name=$base1" >> $GITHUB_ENV
+       # echo "prod_cluster_name=$base4" >> $GITHUB_ENV
 
-    - name: test print prod variables 
-      run: |
-        echo "${{ env.prod_application_name }}" 
-        echo "${{ env.prod_cluster_name }}" 
+  #  - name: test print prod variables 
+      #run: |
+       # echo "${{ env.prod_application_name }}" 
+       # echo "${{ env.prod_cluster_name }}" 
 
-  staging_dts: 
-    needs: set_up
-    if: ${{ needs.set_up.outputs.staging == 'true' }}
-    runs-on: ubuntu-latest
-    strategy:
-      max-parallel: 1
-      matrix: 
-       app-value: ${{ fromJson(needs.set_up.outputs.matrix-staging) }}
-    steps:
-    - name: get the name and cluster name
-      run: |
-        test=${{ matrix.app-value }}
-
-        base=$(dirname $test)
-        base1=$(basename $base) 
-        base2=$(dirname $base)
-        base3=$(dirname $base2)
-        base4=$(basename $base3)
-
-        echo "staging_application_name=$base1" >> $GITHUB_ENV
-        echo "staging_cluster_name=$base4" >> $GITHUB_ENV
-        
-    - name: test print staging variables 
-      run: |
-        echo "${{ env.staging_application_name }}" 
-        echo "${{ env.staging_cluster_name }}" 
