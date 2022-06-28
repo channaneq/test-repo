@@ -56,12 +56,12 @@ jobs:
     needs: set_up
     if: ${{ needs.set_up.outputs.all_files == 'true' }}
     runs-on: ubuntu-latest
-    outputs: 
-      output1: ${{ steps.step1.outputs.application }}
     strategy:
       max-parallel: 1
       matrix: 
        app-value: ${{ fromJson(needs.set_up.outputs.matrix_files) }}
+    outputs: 
+      output1: ${{ steps.step1.outputs.application }}
     steps:
     - name: get the name and cluster name
       id: step1
