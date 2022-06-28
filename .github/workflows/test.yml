@@ -61,7 +61,7 @@ jobs:
       matrix: 
        app-value: ${{ fromJson(needs.set_up.outputs.matrix_files) }}
     outputs: 
-      output1: ${{ steps.step1.outputs.application }}
+      application: ${{ steps.step1.outputs.application }}
     steps:
     - name: get the name and cluster name
       id: step1
