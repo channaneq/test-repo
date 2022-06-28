@@ -71,7 +71,7 @@ jobs:
           application=$(awk -F/ '{print $(NF-1)}' <<< "$test")
           environment=$(awk -F- '{print $NF}' <<< "$cluster")
 
-         echo '::set-output name=application::dummy'
+          echo "::set-output name=application::dummy"
           
     - name: test print prod variables 
       run: |
