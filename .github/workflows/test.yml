@@ -56,6 +56,8 @@ jobs:
     needs: set_up
     if: ${{ needs.set_up.outputs.all_files == 'true' }}
     runs-on: ubuntu-latest
+    outputs: 
+      output1: ${{ steps.step1.outputs.application}}
     strategy:
       max-parallel: 1
       matrix: 
@@ -69,10 +71,9 @@ jobs:
           application=$(awk -F/ '{print $(NF-1)}' <<< "$test")
           environment=$(awk -F- '{print $NF}' <<< "$cluster")
 
-       #  echo '::set-output name=application::$application'
+         echo '::set-output name=application::$application'
           
     - name: test print prod variables 
       run: |
-          echo hello
-        # echo "application is: ${{ steps.step1.outputs.application }}"
+         echo "application is: ${{ steps.step1.outputs.application }}"
          
