@@ -60,21 +60,25 @@ jobs:
       max-parallel: 1
       matrix: 
        app-value: ${{ fromJson(needs.set_up.outputs.matrix_files) }}
+    outputs: 
+      application: ${{ steps.step1.outputs.application }}
+      cluster: ${{ steps.step1.outputs.cluster }}
+      environment: ${{ steps.step1.outputs.environment }}
     steps:
     - name: get the name and cluster name
+      id: step1
       run: |
           test=${{ matrix.app-value }}
           cluster=$(awk -F/ '{print $2}' <<< "$test")
           application=$(awk -F/ '{print $(NF-1)}' <<< "$test")
           environment=$(awk -F- '{print $NF}' <<< "$cluster")
           
-          echo "cluster=$cluster" >> $GITHUB_ENV
-          echo "application=$application" >> $GITHUB_ENV
-          echo "environment=$environment" >> $GITHUB_ENV
+          echo "::set-output name=application::$application"
+          echo "::set-output name=cluster::$cluster"
+          echo "::set-output name=environment::$environment"
           
     - name: test print prod variables 
       run: |
-       echo cluster is: "${{ env.cluster }}" 
-       echo application is: "${{ env.application }}" 
-       echo environment is: "${{env.environment }}"
-
+       echo app is ${{needs.dts_job.outputs.application}}
+       echo cluster is ${{needs.dts_job.outputs.cluster}}
+       echo environment is ${{needs.dts_job.outputs.environment}}
