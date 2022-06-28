@@ -79,6 +79,6 @@ jobs:
           
     - name: test print prod variables 
       run: |
-         echo "application is: ${{ steps.step1.outputs.application }}"
+         echo ${{ steps.step1.outputs.application
          echo "cluster is: ${{ steps.step1.outputs.cluster }}"
          echo "environment is: ${{ steps.step1.outputs.environment }}"
