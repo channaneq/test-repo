@@ -69,9 +69,10 @@ jobs:
           application=$(awk -F/ '{print $(NF-1)}' <<< "$test")
           environment=$(awk -F- '{print $NF}' <<< "$cluster")
 
-         echo '::set-output name=application::$application'
+       #  echo '::set-output name=application::$application'
           
     - name: test print prod variables 
       run: |
-         echo "application is: ${{ steps.step1.outputs.application }}"
+          echo hello
+        # echo "application is: ${{ steps.step1.outputs.application }}"
          
