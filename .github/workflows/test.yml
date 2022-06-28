@@ -62,6 +62,8 @@ jobs:
        app-value: ${{ fromJson(needs.set_up.outputs.matrix_files) }}
     outputs: 
       application: ${{ steps.step1.outputs.application }}
+      cluster: ${{ steps.step1.outputs.cluster }}
+      environment: ${{ steps.step1.outputs.environment }}
     steps:
     - name: get the name and cluster name
       id: step1
@@ -72,8 +74,11 @@ jobs:
           environment=$(awk -F- '{print $NF}' <<< "$cluster")
 
           echo "::set-output name=application::$(echo $application)"
+          echo "::set-output name=cluster::$(echo $cluster)"
+          echo "::set-output name=environment::$(echo $environment)"
           
     - name: test print prod variables 
       run: |
          echo "application is: ${{ steps.step1.outputs.application }}"
-         
+         echo "cluster is: ${{ steps.step1.outputs.cluster }}"
+         echo "environment is: ${{ steps.step1.outputs.environment }}"
