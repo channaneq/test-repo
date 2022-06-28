@@ -60,7 +60,8 @@ jobs:
       max-parallel: 1
       matrix: 
        app-value: ${{ fromJson(needs.set_up.outputs.matrix_files) }}
-    outputs: 
+    outputs:
+      output1: ${{ steps.step1.outputs.test }} 
       application: ${{ steps.step1.outputs.application }}
       cluster: ${{ steps.step1.outputs.cluster }}
       environment: ${{ steps.step1.outputs.environment }}
@@ -73,12 +74,13 @@ jobs:
           application=$(awk -F/ '{print $(NF-1)}' <<< "$test")
           environment=$(awk -F- '{print $NF}' <<< "$cluster")
           
+           echo "::set-output name=test::$application"
           echo "::set-output name=application::$application"
           echo "::set-output name=cluster::$cluster"
           echo "::set-output name=environment::$environment"
           
     - name: test print prod variables 
       run: |
-       echo "${{needs.dts_job.outputs.application}}"
+       echo "${{needs.dts_job.outputs.output1}}"
        echo "cluster is ${{needs.dts_job.outputs.cluster}}"
        echo "environment is ${{needs.dts_job.outputs.environment}}"
