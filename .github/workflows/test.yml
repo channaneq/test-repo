@@ -79,6 +79,6 @@ jobs:
           
     - name: test print prod variables 
       run: |
-       echo app is ${{needs.dts_job.outputs.application}}
-       echo cluster is ${{needs.dts_job.outputs.cluster}}
-       echo environment is ${{needs.dts_job.outputs.environment}}
+       echo "${{needs.dts_job.outputs.application}}"
+       echo "cluster is ${{needs.dts_job.outputs.cluster}}"
+       echo "environment is ${{needs.dts_job.outputs.environment}}"
