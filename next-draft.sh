@@ -19,22 +19,39 @@
 
 # Populate databases per domain 
   for i in "${all_domains[@]}";do
-  aws resourcegroupstaggingapi get-resources --resource-type-filters rds:db --tag-filters  Key=everquote:domain,Values="$i" --output json | jq -r '.ResourceTagMappingList[].ResourceARN' > "$i"-domain 
+  echo "##########################"
+# Get all of the domains first of all 
+  aws resourcegroupstaggingapi get-resources --resource-type-filters rds:db --tag-filters  Key=everquote:domain,Values="$i" --output json | jq '.ResourceTagMappingList[].ResourceARN' > "$i"-domain 
+# Now for each domain get me each unique platform and store them in a file for each domain
+  aws resourcegroupstaggingapi get-resources --resource-type-filters rds:db --tag-filters  Key=everquote:domain,Values="$i" --output json | jq -r '.ResourceTagMappingList[].Tags[] | select(.Key=="everquote:sox:platform").Value' | sort -u > "$i"-allplatforms  
+# Store each platform in each domain in an array
+  all_platforms=($(cat "$i"-allplatforms | sort -u))
+# Iterate through the platform array for each domain and populate the ARN's for each domain and platform combination
+  for platform in "${all_platforms[@]}"; do
+  aws resourcegroupstaggingapi get-resources --resource-type-filters rds:db --tag-filters  Key=everquote:domain,Values="$i" Key=everquote:sox:platform,Values="$platform" --output json | jq '.ResourceTagMappingList[].ResourceARN' > "$i"-"$platform" 
   done
+  rm "$i"-allplatforms
+  done
+  rm alldomains.txt
 
 # Filter through each domain and return the number of db in each 
   files=$(ls | grep domain)
+  platformfiles=$(ls | grep platform)
   for file in $files; do 
     if [[ $file == connect-domain ]]; then  # Delete db's from connect that have been identified as not sox compliant
      sed '/router/d' ./connect-domain > test && mv test connect-domain
     fi
    echo $file has $(cat "$file" | wc -l) databases
   done
+  echo
+# Breakdown of databases within each platform on each domain
+   for platformfile in $platformfiles; do 
+      echo $platformfile has $(cat "$platformfile" | wc -l) databases
+      echo $(cat "$platformfile")
+      echo
+   done 
 
-# Platforms under each domain 
-  domainfiles=("acquire-domain" "connect-domain" "cover-domain" "enable-domain")
-  
 
 # Cleanup
-  rm alldomains.txt
+  
   rm nonsoxcompliantdbs.txt
