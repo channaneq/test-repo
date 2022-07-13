@@ -54,4 +54,6 @@
 
 # Cleanup
   
-  rm nonsoxcompliantdbs.txt
+ rm nonsoxcompliantdbs.txt
+ rm *-platform
+ rm *-domain
