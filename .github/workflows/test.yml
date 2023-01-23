@@ -9,6 +9,8 @@ permissions:
 jobs:
   deploy:
     runs-on: ubuntu-latest
+    outputs:
+      output1: ${{ steps.push-changes.outputs.changed-files }}
     steps:
     - name: Check out repository
       uses: actions/checkout@v2
@@ -17,10 +19,12 @@ jobs:
       id: push-changes
       uses: everquoteinc/git-push-action@v1
 
-    - name: cormac-test
-      id: cormac-test
-      run: |
-        echo ${{ steps.push-changes.outputs.changed_files.value }}
+  dts_job: 
+    needs: deploy
+    runs-on: ubuntu-latest
+    steps:
+    - run: echo ${{needs.deploy.outputs.output1}}
+
       #with:
         #commit-message: add auto-generated deployment manifests
         #file-pattern: 'deploy/'
