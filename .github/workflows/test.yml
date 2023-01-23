@@ -12,45 +12,45 @@ jobs:
     steps:
     - name: Check out repository
       uses: actions/checkout@v2
-    - name: Generate deployment manifests
-      id: generate-manifests
-      uses: everquoteinc/transform-action@v2
-      with:
-        source-dir: config
-        target-dir: deploy
-        max-concurrency: 10
-        copy-file-pattern: ''
-        rendered-file-name: manifest.yaml
+    #- name: Generate deployment manifests
+    #  id: generate-manifests
+    #  uses: everquoteinc/transform-action@v2
+    #  with:
+    #    source-dir: config
+    #    target-dir: deploy
+    #    max-concurrency: 10
+    #    copy-file-pattern: ''
+    #    rendered-file-name: manifest.yaml
     - name: Push changes to branch
       id: push-changes
       uses: everquoteinc/git-push-action@v1
       with:
-        commit-message: add auto-generated deployment manifests
-        file-pattern: 'deploy/'
-      if: steps.generate-manifests.outcome == 'success'
-    - name: Check deployment manifests
-      id: check-deploy-manifests
-      uses: ./.github/actions/conftest
-      with:
-        namespace: deploy
-        files: deploy/
-      if: steps.push-changes.outcome == 'success'
-    - name: Set status
-      shell: bash
-      env:
-        GITHUB_REPO: ${{ github.repository }}
-        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        CONCLUSION: ${{ steps.check-deploy-manifests.conclusion }}
-      run: |
-        BUILD_COMMIT=$(git rev-parse HEAD)
-        curl --silent \
-             --header "Authorization: Bearer $GITHUB_TOKEN" \
-             --header "Accept: application/vnd.github.v3+json" \
-             --header "Content-Type: application/json" \
-             --request "POST" \
-             --data "$(printf '{"name":"deploy","head_sha":"%s","status":"completed","conclusion":"%s"}' "$BUILD_COMMIT" "$CONCLUSION")" \
-             https://api.github.com/repos/$GITHUB_REPO/check-runs
-      if: always() && steps.push-changes.outcome == 'success'
+        #commit-message: add auto-generated deployment manifests
+        #file-pattern: 'deploy/'
+      #if: steps.generate-manifests.outcome == 'success'
+    #- name: Check deployment manifests
+    #  id: check-deploy-manifests
+    #  uses: ./.github/actions/conftest
+    #  with:
+    #    namespace: deploy
+    #    files: deploy/
+    #  if: steps.push-changes.outcome == 'success'
+    #- name: Set status
+    #  shell: bash
+    #  env:
+    #    GITHUB_REPO: ${{ github.repository }}
+    #    GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+    #    CONCLUSION: ${{ steps.check-deploy-manifests.conclusion }}
+    #  run: |
+    #    BUILD_COMMIT=$(git rev-parse HEAD)
+    #    curl --silent \
+    #         --header "Authorization: Bearer $GITHUB_TOKEN" \
+    #         --header "Accept: application/vnd.github.v3+json" \
+    #         --header "Content-Type: application/json" \
+    #         --request "POST" \
+    #         --data "$(printf '{"name":"deploy","head_sha":"%s","status":"completed","conclusion":"%s"}' "$BUILD_COMMIT" "$CONCLUSION")" \
+    #         https://api.github.com/repos/$GITHUB_REPO/check-runs
+    #  if: always() && steps.push-changes.outcome == 'success'
 
 
 #name: Deployment Tracker Job
