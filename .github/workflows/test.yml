@@ -37,7 +37,7 @@ jobs:
         if: steps.filter.outputs.deploy_files == 'true'
         run: |
          all_applications=(${{ steps.filter.outputs.deploy_files }})
-         echo ${{all_applications[@]}}
+         echo ${all_applications[@]}
          IFS=','
          filtered_apps=()
          
