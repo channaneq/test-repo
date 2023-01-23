@@ -73,6 +73,6 @@ jobs:
           echo "environment=$environment" >> $GITHUB_ENV
           echo "region=$region" >> $GITHUB_ENV
           
-	  echo $application
+          echo $application
           echo $environment
           echo $region
