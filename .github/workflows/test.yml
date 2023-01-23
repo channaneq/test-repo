@@ -24,7 +24,7 @@ jobs:
     - name: Push changes to branch
       id: push-changes
       uses: everquoteinc/git-push-action@v1
-      with:
+      #with:
         #commit-message: add auto-generated deployment manifests
         #file-pattern: 'deploy/'
       #if: steps.generate-manifests.outcome == 'success'
