@@ -30,7 +30,7 @@ jobs:
         with:
           list-files: json
           filters: |
-          addedOrModifiedAnchors:
+            addedOrModifiedAnchors:
             - added|modified: '**'
 
 
