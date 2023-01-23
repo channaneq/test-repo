@@ -54,7 +54,6 @@ jobs:
          
   dts_job: 
     needs: set_up
-    #if: ${{ needs.filter.outputs.change-detected == 'true' }}
     runs-on: ubuntu-latest
     strategy:
       max-parallel: 1
@@ -64,14 +63,16 @@ jobs:
     - name: get the name and cluster name
       run: |
           app=${{ matrix.app-value }}
+          cluster=$(awk -F/ '{print $2}' <<< "$app")
           application=$(awk -F/ '{print $(NF-1)}' <<< "$app")
+          environment=$(awk -F- '{print $NF}' <<< "$cluster")
+          region=$(awk -F- '{printf("%s-%s", $3, $2)}' <<< "$cluster" | sed 's/\([0-9][0-9]*\)$/-\1/')
           
+          echo "cluster=$cluster" >> $GITHUB_ENV
           echo "application=$application" >> $GITHUB_ENV
-    - name: deployment-tracker-step 
-      uses: everquoteinc/deployment-tracker-action@v1
-      with:
-        application-name: ${{ env.application }}
-        environment: dev
-        platform: enable
-        team: 'cloud eng'
-        deployment-status: success
+          echo "environment=$environment" >> $GITHUB_ENV
+          echo "region=$region" >> $GITHUB_ENV
+          
+          echo $application
+          echo $environment
+          echo $region
