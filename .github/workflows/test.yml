@@ -36,8 +36,7 @@ jobs:
       - name: List all changed files
         if: steps.filter.outputs.deploy_files == 'true'
         run: |
-         all_applications=(${{ steps.filter.outputs.deploy_files }})
-         echo ${all_applications[@]}
+         all_applications=(${{ steps.filter.outputs.deploy_files_files }})
          IFS=','
          filtered_apps=()
          
