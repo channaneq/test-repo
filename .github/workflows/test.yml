@@ -18,10 +18,10 @@ jobs:
       uses: everquoteinc/git-push-action@v1
 
     - name: cormac-test
-      if: steps.push-changes.outputs.change_detected == 'false'
+      if: steps.push-changes.outputs.change_detected.value == 'true'
       id: cormac-test
       run: |
-        echo ${{ steps.push-changes.outputs.changed_files }}
+        echo ${{ steps.push-changes.outputs.changed_files.value }}
       #with:
         #commit-message: add auto-generated deployment manifests
         #file-pattern: 'deploy/'
