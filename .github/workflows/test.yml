@@ -30,8 +30,9 @@ jobs:
         with:
           list-files: json
           filters: |
-            deploy_files:
-              - 'deploy/**'
+          addedOrModifiedAnchors:
+            - added|modified: deploy/*
+
 
       - name: List all changed files
         if: steps.filter.outputs.deploy_files == 'true'
