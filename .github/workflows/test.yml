@@ -1,140 +1,79 @@
-name: Deploy
+name: Deployment Tracker Job
 
-on: push
-
-permissions:
-  checks: write
-  contents: write
+on:
+  push:
+    branches:
+      - master
+    paths:
+      - 'deploy/**'
 
 jobs:
-  deploy:
+  set_up:
+    runs-on: ubuntu-latest
+    name: Basic Usage Test
+    permissions:
+      id-token: write
+      contents: read
     outputs:
-      changed-files: ${{ steps.push-changes.outputs.changed-files }}
-    runs-on: ubuntu-latest
+      all_files: ${{ steps.filter.outputs.deploy_files }}
+      matrix_files: ${{ steps.set-matrix.outputs.matrix_files }}
+
     steps:
-    - name: Check out repository
-      uses: actions/checkout@v2
+      - name: Checkout
+        uses: actions/checkout@v2
+        with:
+          fetch-depth: 0  
+          
+      - name: filter
+        uses: dorny/paths-filter@v2
+        id: filter
+        with:
+          list-files: json
+          filters: |
+            deploy_files:
+              - 'deploy/**'
 
-    - name: Push changes to branch
-      id: push-changes
-      uses: everquoteinc/git-push-action@v1
-    
-  test:
-    needs: deploy
-    if: ${{ needs.deploy.outputs.changed-files != null }}
+      - name: List all changed files
+        if: steps.filter.outputs.deploy_files == 'true'
+        run: |
+         all_applications=(${{ steps.filter.outputs.deploy_files }})
+         echo ${{all_applications[@]}}
+         IFS=','
+         filtered_apps=()
+         
+         # Get the application names first
+         for file in ${all_applications[@]}; do
+            filtered_apps+=("$file") 
+         done
+         echo "filtered_applications=${filtered_apps[@]}" >> $GITHUB_ENV         
+         
+      - name: set-matrix 
+        id: set-matrix
+        if: steps.filter.outputs.deploy_files == 'true'
+        run: | 
+         echo "matrix_files=$(echo ${{ env.filtered_applications }} | tr -d '[]' | tr -d '\n' | jq -R -s -c 'split(" ")')" >> $GITHUB_OUTPUT        
+         
+  dts_job: 
+    needs: set_up
     runs-on: ubuntu-latest
+    strategy:
+      max-parallel: 1
+      matrix: 
+       app-value: ${{ fromJson(needs.set_up.outputs.matrix_files) }}
     steps:
-    - name: test
-      run: echo ${{ needs.deploy.outputs.changed-files }}
-
-      
-
-
-      #with:
-        #commit-message: add auto-generated deployment manifests
-        #file-pattern: 'deploy/'
-      #if: steps.generate-manifests.outcome == 'success'
-    #- name: Check deployment manifests
-    #  id: check-deploy-manifests
-    #  uses: ./.github/actions/conftest
-    #  with:
-    #    namespace: deploy
-    #    files: deploy/
-    #  if: steps.push-changes.outcome == 'success'
-    #- name: Set status
-    #  shell: bash
-    #  env:
-    #    GITHUB_REPO: ${{ github.repository }}
-    #    GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-    #    CONCLUSION: ${{ steps.check-deploy-manifests.conclusion }}
-    #  run: |
-    #    BUILD_COMMIT=$(git rev-parse HEAD)
-    #    curl --silent \
-    #         --header "Authorization: Bearer $GITHUB_TOKEN" \
-    #         --header "Accept: application/vnd.github.v3+json" \
-    #         --header "Content-Type: application/json" \
-    #         --request "POST" \
-    #         --data "$(printf '{"name":"deploy","head_sha":"%s","status":"completed","conclusion":"%s"}' "$BUILD_COMMIT" "$CONCLUSION")" \
-    #         https://api.github.com/repos/$GITHUB_REPO/check-runs
-    #  if: always() && steps.push-changes.outcome == 'success'
-
-
-#name: Deployment Tracker Job
-#
-#on:
-#  push:
-#    branches:
-#      - master
-#    paths:
-#      - 'deploy/**'
-#
-#jobs:
-#  set_up:
-#    runs-on: ubuntu-latest
-#    name: Basic Usage Test
-#    permissions:
-#      id-token: write
-#      contents: read
-#    outputs:
-#      all_files: ${{ steps.filter.outputs.all_files }}
-#      matrix_files: ${{ steps.set-matrix.outputs.matrix_files }}
-#
-#    steps:
-#      - name: Checkout
-#        uses: actions/checkout@v2
-#        with:
-#          fetch-depth: 0  
-#          
-#      - name: filter
-#        uses: dorny/paths-filter@v2
-#        id: filter
-#        with:
-#          list-files: json
-#          filters: |
-#            deploy_files:
-#              - 'deploy/**/**'
-#
-#      - name: List all changed files
-#        if: steps.filter.outputs.deploy_files == 'true'
-#        run: |
-#         all_applications=(${{ steps.filter.outputs.deploy_files_files }})
-#         IFS=','
-#         filtered_apps=()
-#         
-#         # Get the application names first
-#         for file in ${all_applications[@]}; do
-#            filtered_apps+=("$file") 
-#         done
-#         echo "filtered_applications=${filtered_apps[@]}" >> $GITHUB_ENV         
-#         
-#      - name: set-matrix 
-#        id: set-matrix
-#        if: steps.filter.outputs.deploy_files == 'true'
-#        run: | 
-#         echo "matrix_files=$(echo ${{ env.filtered_applications }} | tr -d '[]' | tr -d '\n' | jq -R -s -c 'split(" ")')" >> $GITHUB_OUTPUT        
-#         
-#  dts_job: 
-#    needs: set_up
-#    runs-on: ubuntu-latest
-#    strategy:
-#      max-parallel: 1
-#      matrix: 
-#       app-value: ${{ fromJson(needs.set_up.outputs.matrix_files) }}
-#    steps:
-#    - name: get the name and cluster name
-#      run: |
-#          app=${{ matrix.app-value }}
-#          cluster=$(awk -F/ '{print $2}' <<< "$app")
-#          application=$(awk -F/ '{print $(NF-1)}' <<< "$app")
-#          environment=$(awk -F- '{print $NF}' <<< "$cluster")
-#          region=$(awk -F- '{printf("%s-%s", $3, $2)}' <<< "$cluster" | sed 's/\([0-9][0-9]*\)$/-\1/')
-#          
-#          echo "cluster=$cluster" >> $GITHUB_ENV
-#          echo "application=$application" >> $GITHUB_ENV
-#          echo "environment=$environment" >> $GITHUB_ENV
-#          echo "region=$region" >> $GITHUB_ENV
-#          
-#          echo $application
-#          echo $environment
-#          echo $region
-#
+    - name: get the name and cluster name
+      run: |
+          app=${{ matrix.app-value }}
+          cluster=$(awk -F/ '{print $2}' <<< "$app")
+          application=$(awk -F/ '{print $(NF-1)}' <<< "$app")
+          environment=$(awk -F- '{print $NF}' <<< "$cluster")
+          region=$(awk -F- '{printf("%s-%s", $3, $2)}' <<< "$cluster" | sed 's/\([0-9][0-9]*\)$/-\1/')
+          
+          echo "cluster=$cluster" >> $GITHUB_ENV
+          echo "application=$application" >> $GITHUB_ENV
+          echo "environment=$environment" >> $GITHUB_ENV
+          echo "region=$region" >> $GITHUB_ENV
+          
+          echo $application
+          echo $environment
+          echo $region
