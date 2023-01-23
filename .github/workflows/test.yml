@@ -72,8 +72,3 @@ jobs:
           echo "application=$application" >> $GITHUB_ENV
           echo "environment=$environment" >> $GITHUB_ENV
           echo "region=$region" >> $GITHUB_ENV
-    - name: test print prod variables 
-      run: |
-          echo ${{ env.application }} 
-          echo ${{ env.environment }}
-          echo ${{ env.region }}
