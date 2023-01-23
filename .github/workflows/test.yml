@@ -30,13 +30,13 @@ jobs:
         with:
           list-files: json
           filters: |
-            all_files:
+            deploy_files:
               - 'deploy/**/**'
 
       - name: List all changed files
-        if: steps.filter.outputs.all_files == 'true'
+        if: steps.filter.outputs.deploy_files == 'true'
         run: |
-         all_applications=(${{ steps.filter.outputs.all_files_files }})
+         all_applications=(${{ steps.filter.outputs.deploy_files_files }})
          IFS=','
          filtered_apps=()
          
@@ -48,37 +48,32 @@ jobs:
          
       - name: set-matrix 
         id: set-matrix
-        if: steps.filter.outputs.all_files == 'true'
+        if: steps.filter.outputs.deploy_files == 'true'
         run: | 
-         echo "::set-output name=matrix_files::$(echo ${{ env.filtered_applications }} | tr -d '[]' | tr -d '\n' | jq -R -s -c 'split(" ")')"         
+         echo "matrix_files=$(echo ${{ env.filtered_applications }} | tr -d '[]' | tr -d '\n' | jq -R -s -c 'split(" ")')" >> $GITHUB_OUTPUT        
          
   dts_job: 
     needs: set_up
-    if: ${{ needs.set_up.outputs.all_files == 'true' }}
     runs-on: ubuntu-latest
     strategy:
       max-parallel: 1
       matrix: 
        app-value: ${{ fromJson(needs.set_up.outputs.matrix_files) }}
-    outputs: 
-      application: ${{ steps.step1.outputs.application }}
-      cluster: ${{ steps.step1.outputs.cluster }}
-      environment: ${{ steps.step1.outputs.environment }}
     steps:
     - name: get the name and cluster name
-      id: step1
       run: |
-          test=${{ matrix.app-value }}
-          cluster=$(awk -F/ '{print $2}' <<< "$test")
-          application=$(awk -F/ '{print $(NF-1)}' <<< "$test")
+          app=${{ matrix.app-value }}
+          cluster=$(awk -F/ '{print $2}' <<< "$app")
+          application=$(awk -F/ '{print $(NF-1)}' <<< "$app")
           environment=$(awk -F- '{print $NF}' <<< "$cluster")
-
-          echo "::set-output name=application::$(echo $application)"
-          echo "::set-output name=cluster::$(echo $cluster)"
-          echo "::set-output name=environment::$(echo $environment)"
+          region=$(awk -F- '{printf("%s-%s", $3, $2)}' <<< "$cluster" | sed 's/\([0-9][0-9]*\)$/-\1/')
           
+          echo "cluster=$cluster" >> $GITHUB_ENV
+          echo "application=$application" >> $GITHUB_ENV
+          echo "environment=$environment" >> $GITHUB_ENV
+          echo "region=$region" >> $GITHUB_ENV
     - name: test print prod variables 
       run: |
-         echo ${{ steps.step1.outputs.application }}
-         echo "cluster is: ${{ steps.step1.outputs.cluster }}"
-         echo "environment is: ${{ steps.step1.outputs.environment }}"
+          echo ${{ env.application }} 
+          echo ${{ env.environment }}
+          echo ${{ env.region }}
