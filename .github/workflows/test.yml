@@ -31,7 +31,7 @@ jobs:
           list-files: json
           filters: |
           addedOrModifiedAnchors:
-            - added|modified: deploy/*
+            - added|modified: '**'
 
 
       - name: List all changed files
